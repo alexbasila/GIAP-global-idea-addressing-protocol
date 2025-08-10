@@ -26,16 +26,19 @@
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
     .table{width:100%;border-collapse:collapse}
     .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .compare div{background:#f9f9f9;border-radius:8px;padding:12px;border:1px solid #ddd}
+    .compare h3{margin-top:0}
   </style>
 </head>
 <body>
   <header>
     <h1>GIAP – Churchen (MVP)</h1>
-    <p class="sub">The net connects people; <b>GIAP connects only ideas</b>. Churchen = der Akt der Adressvergabe.</p>
+    <p class="sub">The net connects people; <b>GIAP connects only ideas</b>. Churchen = the act of assigning an address.</p>
   </header>
 
   <main>
-    <!-- Info-Block aus README -->
+    <!-- Info block from README -->
     <section class="card">
       <h1>GIAP – Global Idea Addressing Protocol</h1>
       <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>
@@ -50,12 +53,20 @@
       </ul>
 
       <h2>Example</h2>
-      <p>A student in Nairobi imagines a new water filter. Without GIAP: years of chance connections.
-      With GIAP: seconds to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore.</p>
+      <div class="compare">
+        <div>
+          <h3>Without GIAP</h3>
+          <p>A student in Nairobi imagines a new water filter. Years of chance connections, networking, and luck are needed before it reaches the right people.</p>
+        </div>
+        <div>
+          <h3>With GIAP</h3>
+          <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore – no matter who the originator is.</p>
+        </div>
+      </div>
 
       <h2>What is Churchen?</h2>
       <p><strong>Churchen</strong> is the act of connection – the moment an idea becomes an address in the idea network.
-      A Churcher only has to think; GIAP does the rest.</p>
+      The originator only has to think; GIAP does the rest.</p>
 
       <h2>Feedback (Resonance Test)</h2>
       <ul>
@@ -65,17 +76,17 @@
     </section>
 
     <section class="card">
-      <h2>1) Idee erfassen → Adresse vergeben</h2>
-      <textarea id="idea" placeholder="Schreibe hier deine Idee…"></textarea>
+      <h2>1) Capture Idea → Assign Address</h2>
+      <textarea id="idea" placeholder="Write your idea here…"></textarea>
       <div class="row">
-        <button id="btn-churchen">Adresse vergeben (churchen)</button>
-        <button id="btn-clear" class="secondary">Feld leeren</button>
+        <button id="btn-churchen">Assign Address (churchen)</button>
+        <button id="btn-clear" class="secondary">Clear</button>
       </div>
-      <p class="muted">Hinweis: Alles läuft lokal im Browser. Inhalte werden nur in deinem LocalStorage gespeichert – kein Server.</p>
+      <p class="muted">Note: Everything runs locally in your browser. No content is sent to any server – stored only in your LocalStorage.</p>
     </section>
 
     <section class="card" id="result" style="display:none">
-      <h2>Adresse</h2>
+      <h2>Address</h2>
       <div class="grid">
         <div>
           <label>IdeaID</label>
@@ -87,16 +98,16 @@
         </div>
       </div>
       <div class="row" style="margin-top:10px">
-        <button id="btn-copy" class="secondary">IdeaID kopieren</button>
-        <button id="btn-copy-url" class="secondary">Permalink kopieren</button>
+        <button id="btn-copy" class="secondary">Copy IdeaID</button>
+        <button id="btn-copy-url" class="secondary">Copy Permalink</button>
       </div>
-      <p class="muted">Permalink-Schema: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
+      <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
     </section>
 
     <section class="card">
-      <h2>2) Lokales Register</h2>
+      <h2>2) Local Register</h2>
       <table class="table" id="tbl">
-        <thead><tr><th>IdeaID</th><th>Vorschau</th><th>Datum</th><th>Aktion</th></tr></thead>
+        <thead><tr><th>IdeaID</th><th>Preview</th><th>Date</th><th>Action</th></tr></thead>
         <tbody></tbody>
       </table>
       <div class="row" style="margin-top:8px">
@@ -110,8 +121,8 @@
 
     <section class="card">
       <h2>3) (Optional) Tags</h2>
-      <p class="muted">Für spätere Relevanz-Matches – wird lokal mitgespeichert.</p>
-      <input id="tags" type="text" placeholder="z.B. linked-data, protocol, DID" />
+      <p class="muted">For later relevance matching – stored locally with the idea.</p>
+      <input id="tags" type="text" placeholder="e.g. linked-data, protocol, DID" />
     </section>
   </main>
 
