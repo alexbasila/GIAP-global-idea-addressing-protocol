@@ -26,4 +26,4 @@ This is a **resonance test**.
 - What would stop you from connecting your ideas this way?
 
 
-**Contact:** alexis.basilakis@example.com
+**Contact:** alexisbasilakis@yahoo.com 
