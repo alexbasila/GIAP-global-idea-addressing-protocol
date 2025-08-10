@@ -9,7 +9,7 @@
     :root{--w:900px}
     *{box-sizing:border-box}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
-    header{padding:28px 16px;background:#fff;border-bottom:1px solid #eee;text-align:center}
+    header{padding:0;background:#fff;border-bottom:1px solid #eee}
     h1{margin:0 0 6px;font-size:28px}
     .sub{color:#444}
     main{max-width:var(--w);margin:0 auto;padding:18px}
@@ -29,17 +29,60 @@
     .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     .compare div{background:#f9f9f9;border-radius:8px;padding:12px;border:1px solid #ddd}
     .compare h3{margin-top:0}
+
+    /* --- New: Hero / Value / CTA --- */
+    .hero{
+      max-width:var(--w); margin:0 auto; padding:48px 16px 28px 16px; text-align:center;
+    }
+    .hero h1{
+      font-size:34px; line-height:1.15; margin:0 0 10px;
+    }
+    .hero .lead{
+      font-size:18px; color:#555; max-width:800px; margin:0 auto 18px;
+    }
+    .cta{
+      display:inline-block; background:#111; color:#fff; padding:12px 20px; border-radius:10px; text-decoration:none; font-weight:700; border:1px solid #111;
+    }
+    .cta.secondary{background:#fff;color:#111}
+    .value{
+      display:grid; grid-template-columns:1fr; gap:10px; margin:18px auto 6px; max-width:860px; padding:0 16px 22px;
+    }
+    .value .pill{
+      background:#f6f6f6; border:1px solid #eee; border-radius:999px; padding:10px 14px; font-size:14px;
+    }
+    @media (min-width:800px){
+      .hero h1{font-size:40px}
+      .value{grid-template-columns:1fr 1fr 1fr}
+    }
+    .note-bar{
+      background:#0f172a; color:#fff; padding:10px 14px; text-align:center; font-size:14px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>GIAP – Churchen (MVP)</h1>
-    <p class="sub">The net connects people; <b>GIAP connects only ideas</b>. Churchen = the act of assigning an address.</p>
+    <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>
+    <div class="hero">
+      <h1>Every Idea. One Click. Global Reach.</h1>
+      <p class="lead">
+        GIAP (Global Idea Addressing Protocol) gives every idea a unique, permanent address at birth — no gatekeepers, no delay. 
+        You think it, and it’s connected.
+      </p>
+      <div class="row" style="justify-content:center; margin-top:14px">
+        <a href="#demo" class="cta">Try it now</a>
+        <a href="#learn" class="cta secondary">How it works</a>
+      </div>
+      <div class="value">
+        <div class="pill">Address at birth (IdeaID)</div>
+        <div class="pill">Instant linkability &amp; discovery</div>
+        <div class="pill">Local-first · Privacy by design</div>
+      </div>
+    </div>
   </header>
 
   <main>
     <!-- Info block from README -->
-    <section class="card">
+    <section class="card" id="learn">
       <h1>GIAP – Global Idea Addressing Protocol</h1>
       <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>
       The net connects people; <strong>GIAP connects only ideas</strong>.</p>
@@ -75,7 +118,8 @@
       </ul>
     </section>
 
-    <section class="card">
+    <!-- Unverändert in Funktion, nur mit id="demo" ergänzt -->
+    <section class="card" id="demo">
       <h2>1) Capture Idea → Assign Address</h2>
       <textarea id="idea" placeholder="Write your idea here…"></textarea>
       <div class="row">
@@ -126,6 +170,19 @@
     </section>
   </main>
 
+  <script>
+    // Smooth scroll for the two CTAs; does nicht in deine bestehende Logik eingreifen
+    document.addEventListener('click', (e)=>{
+      const a = e.target.closest('a[href^="#"]');
+      if(!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if(el){
+        e.preventDefault();
+        el.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+  </script>
   <script src="./script.js"></script>
 </body>
 </html>
