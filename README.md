@@ -1,4 +1,4 @@
-# GIAP – Global Idea Addressing Protocol (Churchen)
+# GIAP – Global Idea Addressing Protocol
 
 **The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.**  
 The net connects people; **GIAP connects only ideas**.
