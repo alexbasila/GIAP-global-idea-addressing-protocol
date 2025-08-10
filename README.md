@@ -16,9 +16,10 @@ Without GIAP: years of chance connections.
 With GIAP: seconds to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore.
 
 
-## Why "Churchen"?
-**Churchen** is the act of giving an idea its address and making it visible in the idea network.  
-GIAP is the technology – Churchen is the moment of connection.
+## What is Churchen?
+
+Churchen is the act of connection – the moment an idea becomes an address in the idea network.  
+A Churcher only has to think; GIAP does the rest.
 
 ## Feedback
 This is a **resonance test**.  
