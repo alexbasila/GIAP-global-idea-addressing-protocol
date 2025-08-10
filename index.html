@@ -1,87 +1,92 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>GIAP · Churchen (MVP)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GIAP – Global Idea Addressing Protocol (Churchen)</title>
+  <meta name="description" content="GIAP connects ideas, not people. Give each idea an address at birth." />
   <style>
-    :root { --max: 900px; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.55; color: #111; background:#fafafa;
-    }
-    header {
-      padding: 64px 20px; text-align: center; background: #fff; border-bottom: 1px solid #eee;
-    }
-    h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 42px); letter-spacing: -0.02em; }
-    .tagline { font-size: clamp(16px, 3.2vw, 20px); color:#333; margin: 6px 0 14px; }
-    .sub { color:#555; max-width: var(--max); margin: 0 auto; }
-    .wrap { max-width: var(--max); margin: 0 auto; padding: 28px 20px; }
-    h2 { margin: 28px 0 10px; font-size: clamp(22px, 4.2vw, 28px); }
-    p { margin: 10px 0; }
-    ul { margin: 8px 0 0 18px; }
-    .card {
-      background:#fff; border:1px solid #eee; border-radius:14px; padding:20px; margin:16px 0;
-      box-shadow: 0 4px 18px rgba(0,0,0,.04);
-    }
-    .cta {
-      display:inline-block; padding:12px 18px; border-radius:10px; text-decoration:none; font-weight:600;
-      border:1px solid #111; color:#111; background:#fff; margin: 10px 8px 0 0;
-    }
-    .cta.primary { background:#111; color:#fff; }
-    footer { text-align:center; color:#666; font-size:14px; padding:32px 16px; }
-    code { background:#f2f2f2; padding:2px 6px; border-radius:6px; }
+    :root{--w:900px}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
+    header{padding:28px 16px;background:#fff;border-bottom:1px solid #eee;text-align:center}
+    h1{margin:0 0 6px;font-size:28px}
+    .sub{color:#444}
+    main{max-width:var(--w);margin:0 auto;padding:18px}
+    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
+    textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}
+    button.secondary{background:#fff;color:#111}
+    input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
+    code{background:#f2f2f2;border-radius:6px;padding:2px 6px}
+    .muted{color:#666;font-size:14px}
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
   </style>
 </head>
 <body>
   <header>
-    <h1>GIAP – Global Idea Addressing Protocol</h1>
-    <p class="tagline">The net connects people; <strong>GIAP connects only ideas</strong>.</p>
-    <p class="sub">The moment you have an idea, GIAP asks if you want to give it a unique address on the net – and see matching ideas. <br/>GIAP is the technology. <em>Churchen</em> is the act.</p>
-    <p>
-      <a class="cta primary" href="https://github.com/alexbasila/GIAP-global-idea-addressing-protocol">View on GitHub</a>
-      <a class="cta" href="https://github.com/alexbasila/GIAP-global-idea-addressing-protocol/issues/new">Give Feedback</a>
-    </p>
+    <h1>GIAP – Churchen (MVP)</h1>
+    <p class="sub">The net connects people; <b>GIAP connects only ideas</b>. Churchen = der Akt der Adressvergabe.</p>
   </header>
 
-  <main class="wrap">
+  <main>
     <section class="card">
-      <h2>What GIAP does</h2>
-      <ul>
-        <li><strong>Addressing at birth:</strong> assign a permanent, resolvable ID the moment an idea appears.</li>
-        <li><strong>Relevance matching:</strong> connect to related ideas, needs, and synergies globally.</li>
-        <li><strong>Originator control:</strong> access is scoped by the author (pseudonymous possible).</li>
-      </ul>
+      <h2>1) Idee erfassen → Adresse vergeben</h2>
+      <textarea id="idea" placeholder="Schreibe hier deine Idee…"></textarea>
+      <div class="row">
+        <button id="btn-churchen">Adresse vergeben (churchen)</button>
+        <button id="btn-clear" class="secondary">Feld leeren</button>
+      </div>
+      <p class="muted">Hinweis: Alles läuft lokal im Browser. Inhalte werden nur in deinem LocalStorage gespeichert – kein Server.</p>
+    </section>
+
+    <section class="card" id="result" style="display:none">
+      <h2>Adresse</h2>
+      <div class="grid">
+        <div>
+          <label>IdeaID</label>
+          <input id="ideaId" type="text" readonly class="mono" />
+        </div>
+        <div>
+          <label>Content Hash (SHA-256)</label>
+          <input id="hash" type="text" readonly class="mono" />
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="btn-copy" class="secondary">IdeaID kopieren</button>
+        <button id="btn-copy-url" class="secondary">Permalink kopieren</button>
+      </div>
+      <p class="muted">Permalink-Schema: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
     </section>
 
     <section class="card">
-      <h2>What is Churchen?</h2>
-      <p><strong>Churchen is the act of connection</strong> — the moment an idea becomes an address in the idea network. <br>
-      A churcher only has to think; GIAP does the rest.</p>
+      <h2>2) Lokales Register</h2>
+      <table class="table" id="tbl">
+        <thead><tr><th>IdeaID</th><th>Vorschau</th><th>Datum</th><th>Aktion</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="row" style="margin-top:8px">
+        <button id="btn-export" class="secondary">Export (.json)</button>
+        <label class="secondary" style="border:1px solid #111;padding:9px 12px;border-radius:10px;background:#fff;cursor:pointer">
+          Import (.json)
+          <input type="file" id="file-import" accept="application/json" style="display:none">
+        </label>
+      </div>
     </section>
 
     <section class="card">
-      <h2>Why it matters</h2>
-      <p>Today we filter for <em>who</em>, not for <em>what</em>. Many good ideas never reach the right minds in time. GIAP creates a neutral address space so ideas are discoverable and linkable from birth — independent of person or institution.</p>
-    </section>
-
-    <section class="card">
-      <h2>Example</h2>
-      <p>A student in Nairobi imagines a new water-filter. Without GIAP: years of chance. With GIAP: seconds to engineers in Seattle, patent counsel in Zurich, sponsors in Singapore.</p>
-    </section>
-
-    <section class="card">
-      <h2>How to respond (resonance test)</h2>
-      <ul>
-        <li>Would you use GIAP? What would stop you?</li>
-        <li>Open an issue with your thoughts: <a href="https://github.com/alexbasila/GIAP-global-idea-addressing-protocol/issues/new">Create feedback</a>.</li>
-      </ul>
+      <h2>3) (Optional) Tags</h2>
+      <p class="muted">Für spätere Relevanz-Matches – wird lokal mitgespeichert.</p>
+      <input id="tags" type="text" placeholder="z.B. linked-data, protocol, DID" />
     </section>
   </main>
 
-  <footer>
-    <p>© 2025 GIAP / Churchen — initial public resonance test.</p>
-  </footer>
+  <script src="./script.js"></script>
 </body>
 </html>
