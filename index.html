@@ -43,10 +43,13 @@
 </head>
 <body>
 
-<!-- Judge This Idea Button -->
+<!-- Floating: Judge This Idea (mit Overlay & Auto-Seeding) -->
 <script>
 (function() {
   'use strict';
+
+  const STORAGE_KEY = 'giap_registry_v1';
+
   const btn = document.createElement('button');
   btn.textContent = 'Judge This Idea';
   Object.assign(btn.style, {
@@ -56,42 +59,78 @@
     zIndex:'9999', fontSize:'14px', boxShadow:'0 4px 12px rgba(0,0,0,.2)'
   });
 
-  btn.addEventListener('click', () => {
-    try {
-      const raw = localStorage.getItem('giap_registry_v1') || '[]';
-      const registry = JSON.parse(raw);
-      if (!registry.length) {
-        alert(
-          'GIAP gibt jeder Idee eine Adresse.\n\n' +
-          'Noch keine lokalen Ideen gespeichert.\n' +
-          '→ Erfasse oben eine Idee und klicke nochmals auf "Judge".'
-        );
-        return;
-      }
-      const a = registry[Math.floor(Math.random()*registry.length)];
-      const b = registry[Math.floor(Math.random()*registry.length)];
-      const lines = (o) => [
-        `Titel: ${o.title || '(ohne Titel)'}`,
-        `Tags: ${(o.tags||[]).join(', ') || '—'}`,
-        `Adresse: ${o.id || 'giap://…'}`
-      ].join('\n');
+  function readReg(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
+  function writeReg(v){ localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); }
 
-      alert(
-        'GIAP gibt jeder Idee eine Adresse – und macht Verknüpfung sichtbar.\n\n' +
-        'Idee A\n' + lines(a) + '\n\n' +
-        'Idee B\n' + lines(b) + '\n\n' +
-        '→ Diese Adressen können sofort zusammenfinden (lokal & föderiert).'
-      );
-    } catch(e) {
-      alert('Hinweis: Konnte das lokale Register nicht lesen.');
-    }
+  function ensureMin2(){
+    let r = readReg();
+    if (r.length >= 2) return r;
+    const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    const seed = [
+      { id:`giap:${today}-seedA`, title:'Student in Nairobi: water filter', tags:['water','innovation','sustainability'], date: Date.now() },
+      { id:`giap:${today}-seedB`, title:'Solar saline plantage', tags:['solar','desalination','sustainability'], date: Date.now() }
+    ];
+    if (r.length === 0) r = seed;
+    if (r.length === 1) r.push(seed[1]);
+    writeReg(r);
+    return r;
+  }
+
+  function jaccard(a=[], b=[]){
+    const A=new Set(a.map(x=>String(x).toLowerCase()));
+    const B=new Set(b.map(x=>String(x).toLowerCase()));
+    const inter=[...A].filter(x=>B.has(x)).length;
+    const uni=new Set([...A,...B]).size||1;
+    return inter/uni;
+  }
+
+  function showOverlay(a,b,score){
+    let o=document.getElementById('judge-overlay');
+    if(o) o.remove();
+    o=document.createElement('div'); o.id='judge-overlay';
+    Object.assign(o.style,{position:'fixed',inset:'0',background:'rgba(0,0,0,.45)',zIndex:'10000',display:'grid',placeItems:'center',padding:'16px'});
+
+    const card=document.createElement('div');
+    Object.assign(card.style,{background:'#fff',borderRadius:'12px',maxWidth:'820px',width:'100%',padding:'18px',boxShadow:'0 12px 36px rgba(0,0,0,.25)'});
+    card.innerHTML=`
+      <h3 style="margin:0 0 10px">How GIAP links ideas</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
+          <div style="font-weight:700">Idea A</div>
+          <div><small>${a.id||''}</small></div>
+          <div style="margin-top:6px">${a.title||'(no title)'}</div>
+          <div style="color:#555;margin-top:6px"><small>Tags: ${(a.tags||[]).join(', ')||'—'}</small></div>
+        </div>
+        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
+          <div style="font-weight:700">Idea B</div>
+          <div><small>${b.id||''}</small></div>
+          <div style="margin-top:6px">${b.title||'(no title)'}</div>
+          <div style="color:#555;margin-top:6px"><small>Tags: ${(b.tags||[]).join(', ')||'—'}</small></div>
+        </div>
+      </div>
+      <div style="margin:12px 0 6px">Similarity (tags): <b>${(score*100).toFixed(0)}%</b></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button id="judge-close" class="secondary" style="background:#fff;color:#111;border:1px solid #111;border-radius:10px;padding:8px 12px;cursor:pointer">Close</button>
+      </div>`;
+    o.appendChild(card);
+    document.body.appendChild(o);
+    document.getElementById('judge-close').onclick=()=>o.remove();
+  }
+
+  btn.addEventListener('click', () => {
+    const reg = ensureMin2();
+    const i = Math.floor(Math.random()*reg.length);
+    let j = Math.floor(Math.random()*reg.length);
+    if (reg.length>1) while (j===i) j = Math.floor(Math.random()*reg.length);
+    const A = reg[i], B = reg[j];
+    showOverlay(A,B, jaccard(A.tags||[], B.tags||[]));
   });
 
   document.addEventListener('DOMContentLoaded', () => document.body.appendChild(btn));
 })();
 </script>
 
-<!-- Klickbare GIAP-IDs -->
+<!-- Klickbare GIAP-IDs + Kopieren/Teilen + optionaler Protocol-Handler -->
 <script>
 (function () {
   'use strict';
@@ -117,8 +156,9 @@
   }
 
   function enhanceIdeaIds(root) {
-    // Fix: erkennt giap:YYYYMMDD-… und giap://…
+    // Erkennt giap:YYYYMMDD-… und giap://…
     const rx = /(giap:[^\s,;<>"]+|giap:\/\/[^\s,;<>"]+)/ig;
+
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
     const nodes = [];
     while (walker.nextNode()) {
@@ -139,7 +179,7 @@
           a.textContent = id;
           a.style.textDecoration = 'underline';
           a.style.cursor = 'pointer';
-          a.title = 'Öffnen';
+          a.title = 'Open permalink';
 
           const copyBtn = document.createElement('button');
           copyBtn.textContent = 'kopieren';
@@ -199,88 +239,93 @@
 </header>
 
 <main>
-<section class="card" id="learn">
-  <h1>GIAP – Global Idea Addressing Protocol</h1>
-  <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>
-  The net connects people; <strong>GIAP connects only ideas</strong>.</p>
-  <h2>What is GIAP?</h2>
-  <ul>
-    <li>Assigns a unique, permanent address to each idea at the moment of its creation.</li>
-    <li>Instantly connects it to matching ideas worldwide – independent of person, status, or location.</li>
-    <li>Gives control of visibility and access rights to the originator.</li>
-  </ul>
-  <h2>Example</h2>
-  <div class="compare">
-    <div>
-      <h3>Without GIAP</h3>
-      <p>A student in Nairobi imagines a new water filter. Years of chance connections, networking, and luck are needed before it reaches the right people.</p>
-    </div>
-    <div>
-      <h3>With GIAP</h3>
-      <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore – no matter who the originator is.</p>
-    </div>
-  </div>
-  <h2>What is Churchen?</h2>
-  <p><strong>Churchen</strong> is the act of connection – the moment an idea becomes an address in the idea network.
-  The originator only has to think; GIAP does the rest.</p>
-  <h2>Feedback (Resonance Test)</h2>
-  <ul>
-    <li>Would you use such a system?</li>
-    <li>What would stop you from connecting your ideas this way?</li>
-  </ul>
-</section>
+  <section class="card" id="learn">
+    <h1>GIAP – Global Idea Addressing Protocol</h1>
+    <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>
+    The net connects people; <strong>GIAP connects only ideas</strong>.</p>
 
-<section class="card" id="demo">
-  <h2>1) Capture Idea → Assign Address</h2>
-  <textarea id="idea" placeholder="Write your idea here…"></textarea>
-  <div class="row">
-    <button id="btn-churchen">Assign Address (churchen)</button>
-    <button id="btn-clear" class="secondary">Clear</button>
-  </div>
-  <p class="muted">Note: Everything runs locally in your browser. No content is sent to any server – stored only in your LocalStorage.</p>
-</section>
+    <h2>What is GIAP?</h2>
+    <ul>
+      <li>Assigns a unique, permanent address to each idea at the moment of its creation.</li>
+      <li>Instantly connects it to matching ideas worldwide – independent of person, status, or location.</li>
+      <li>Gives control of visibility and access rights to the originator.</li>
+    </ul>
 
-<section class="card" id="result" style="display:none">
-  <h2>Address</h2>
-  <div class="grid">
-    <div>
-      <label>IdeaID</label>
-      <input id="ideaId" type="text" readonly class="mono" />
+    <h2>Example</h2>
+    <div class="compare">
+      <div>
+        <h3>Without GIAP</h3>
+        <p>A student in Nairobi imagines a new water filter. Years of chance connections, networking, and luck are needed before it reaches the right people.</p>
+      </div>
+      <div>
+        <h3>With GIAP</h3>
+        <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore – no matter who the originator is.</p>
+      </div>
     </div>
-    <div>
-      <label>Content Hash (SHA-256)</label>
-      <input id="hash" type="text" readonly class="mono" />
+
+    <h2>What is Churchen?</h2>
+    <p><strong>Churchen</strong> is the act of connection – the moment an idea becomes an address in the idea network.
+    The originator only has to think; GIAP does the rest.</p>
+
+    <h2>Feedback (Resonance Test)</h2>
+    <ul>
+      <li>Would you use such a system?</li>
+      <li>What would stop you from connecting your ideas this way?</li>
+    </ul>
+  </section>
+
+  <section class="card" id="demo">
+    <h2>1) Capture Idea → Assign Address</h2>
+    <textarea id="idea" placeholder="Write your idea here…"></textarea>
+    <div class="row">
+      <button id="btn-churchen">Assign Address (churchen)</button>
+      <button id="btn-clear" class="secondary">Clear</button>
     </div>
-  </div>
-  <div class="row" style="margin-top:10px">
-    <button id="btn-copy" class="secondary">Copy IdeaID</button>
-    <button id="btn-copy-url" class="secondary">Copy Permalink</button>
-  </div>
-  <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
-</section>
+    <p class="muted">Note: Everything runs locally in your browser. No content is sent to any server – stored only in your LocalStorage.</p>
+  </section>
 
-<section class="card">
-  <h2>2) Local Register</h2>
-  <table class="table" id="tbl">
-    <thead><tr><th>IdeaID</th><th>Preview</th><th>Date</th><th>Action</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  <div class="row" style="margin-top:8px">
-    <button id="btn-export" class="secondary">Export (.json)</button>
-    <label class="secondary" style="border:1px solid #111;padding:9px 12px;border-radius:10px;background:#fff;cursor:pointer">
-      Import (.json)
-      <input type="file" id="file-import" accept="application/json" style="display:none">
-    </label>
-  </div>
-</section>
+  <section class="card" id="result" style="display:none">
+    <h2>Address</h2>
+    <div class="grid">
+      <div>
+        <label>IdeaID</label>
+        <input id="ideaId" type="text" readonly class="mono" />
+      </div>
+      <div>
+        <label>Content Hash (SHA-256)</label>
+        <input id="hash" type="text" readonly class="mono" />
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button id="btn-copy" class="secondary">Copy IdeaID</button>
+      <button id="btn-copy-url" class="secondary">Copy Permalink</button>
+    </div>
+    <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
+  </section>
 
-<section class="card">
-  <h2>3) (Optional) Tags</h2>
-  <p class="muted">For later relevance matching – stored locally with the idea.</p>
-  <input id="tags" type="text" placeholder="e.g. linked-data, protocol, DID" />
-</section>
+  <section class="card">
+    <h2>2) Local Register</h2>
+    <table class="table" id="tbl">
+      <thead><tr><th>IdeaID</th><th>Preview</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="row" style="margin-top:8px">
+      <button id="btn-export" class="secondary">Export (.json)</button>
+      <label class="secondary" style="border:1px solid #111;padding:9px 12px;border-radius:10px;background:#fff;cursor:pointer">
+        Import (.json)
+        <input type="file" id="file-import" accept="application/json" style="display:none">
+      </label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3) (Optional) Tags</h2>
+    <p class="muted">For later relevance matching – stored locally with the idea.</p>
+    <input id="tags" type="text" placeholder="e.g. linked-data, protocol, DID" />
+  </section>
 </main>
 
+<!-- Smooth scroll for CTAs -->
 <script>
 document.addEventListener('click', (e)=>{
   const a = e.target.closest('a[href^="#"]');
@@ -293,7 +338,8 @@ document.addEventListener('click', (e)=>{
   }
 });
 </script>
+
+<!-- Deine bestehende Logik (Hashing, Speichern etc.) -->
 <script src="./script.js"></script>
 </body>
 </html>
-
