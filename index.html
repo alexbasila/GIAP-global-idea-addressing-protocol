@@ -107,7 +107,93 @@
 })();
 </script>
 
+<script>
+// Klickbare GIAP-IDs + Teilen/Kopieren + optionaler Protokoll-Handler
+(function () {
+  'use strict';
 
+  // Optional: web+giap://... auf diese Seite routen
+  if ('registerProtocolHandler' in navigator) {
+    try {
+      navigator.registerProtocolHandler(
+        'web+giap',
+        location.origin + location.pathname + '?id=%s',
+        'GIAP Handler'
+      );
+    } catch(_) {}
+  }
+
+  function permalinkFor(id) {
+    const u = new URL(location.href);
+    u.searchParams.set('id', id);
+    return u.pathname + '?' + u.searchParams.toString();
+  }
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); alert('Adresse kopiert:\n' + text); }
+    catch { alert('Konnte nicht kopieren.'); }
+  }
+
+  function enhanceIdeaIds(root) {
+    const rx = /(giap:\/\/[a-f0-9]{6,})/ig;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    while (walker.nextNode()) {
+      const n = walker.currentNode;
+      if (rx.test(n.nodeValue)) nodes.push(n);
+      rx.lastIndex = 0;
+    }
+    nodes.forEach(n => {
+      const frag = document.createDocumentFragment();
+      const parts = n.nodeValue.split(rx);
+      for (let i=0;i<parts.length;i++) {
+        const chunk = parts[i];
+        if (!chunk) continue;
+        if (chunk.startsWith && chunk.startsWith('giap://')) {
+          const id = chunk;
+          const a = document.createElement('a');
+          a.href = permalinkFor(id);
+          a.textContent = id;
+          a.style.textDecoration = 'underline';
+          a.style.cursor = 'pointer';
+          a.title = 'Öffnen';
+
+          const copyBtn = document.createElement('button');
+          copyBtn.textContent = 'kopieren';
+          copyBtn.style.marginLeft = '8px';
+          copyBtn.onclick = (e)=>{ e.preventDefault(); copy(id); };
+
+          const shareBtn = document.createElement('button');
+          shareBtn.textContent = 'teilen';
+          shareBtn.style.marginLeft = '6px';
+          shareBtn.onclick = async (e)=> {
+            e.preventDefault();
+            const url = location.origin + permalinkFor(id);
+            if (navigator.share) {
+              try { await navigator.share({title:'GIAP Idea', text:id, url}); } catch {}
+            } else {
+              await copy(url);
+            }
+          };
+
+          frag.appendChild(a);
+          frag.appendChild(copyBtn);
+          frag.appendChild(shareBtn);
+        } else {
+          frag.appendChild(document.createTextNode(chunk));
+        }
+      }
+      n.parentNode.replaceChild(frag, n);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    enhanceIdeaIds(document.body);
+    const mo = new MutationObserver(muts => muts.forEach(m=> enhanceIdeaIds(m.target)));
+    mo.observe(document.body, {subtree:true, childList:true, characterData:true});
+  });
+})();
+</script>
+  
   <header>  
     <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>  
     <div class="hero">  
