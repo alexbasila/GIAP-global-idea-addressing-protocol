@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -11,7 +11,7 @@
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
     header{padding:0;background:#fff;border-bottom:1px solid #eee}
     h1{margin:0 0 6px;font-size:28px}
-    .sub{color:#444}
+    h2{margin:0 0 10px}
     main{max-width:var(--w);margin:0 auto;padding:18px}
     .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
     textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
@@ -25,11 +25,10 @@
     @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
     .table{width:100%;border-collapse:collapse}
-    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
+    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:top}
     .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     .compare div{background:#f9f9f9;border-radius:8px;padding:12px;border:1px solid #ddd}
-    .compare h3{margin-top:0}
-    /* Hero / Value / CTA */
+    .compare h3{margin:0 0 8px}
     .hero{max-width:var(--w); margin:0 auto; padding:48px 16px 28px 16px; text-align:center;}
     .hero h1{font-size:34px; line-height:1.15; margin:0 0 10px;}
     .hero .lead{font-size:18px; color:#555; max-width:800px; margin:0 auto 18px;}
@@ -39,184 +38,12 @@
     .value .pill{background:#f6f6f6; border:1px solid #eee; border-radius:999px; padding:10px 14px; font-size:14px;}
     @media (min-width:800px){.hero h1{font-size:40px} .value{grid-template-columns:1fr 1fr 1fr}}
     .note-bar{background:#0f172a; color:#fff; padding:10px 14px; text-align:center; font-size:14px;}
+    .pill-btn{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #111;background:#fff;color:#111;font-size:12px;cursor:pointer}
+    .pill-btn + .pill-btn{margin-left:6px}
+    .id-cell a{display:inline-block}
   </style>
 </head>
 <body>
-
-<!-- Floating: Judge This Idea (mit Overlay & Auto-Seeding) -->
-<script>
-(function() {
-  'use strict';
-
-  const STORAGE_KEY = 'giap_registry_v1';
-
-  const btn = document.createElement('button');
-  btn.textContent = 'Judge This Idea';
-  Object.assign(btn.style, {
-    position:'fixed', bottom:'20px', right:'20px',
-    padding:'10px 16px', background:'#111', color:'#fff',
-    border:'none', borderRadius:'8px', cursor:'pointer',
-    zIndex:'9999', fontSize:'14px', boxShadow:'0 4px 12px rgba(0,0,0,.2)'
-  });
-
-  function readReg(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
-  function writeReg(v){ localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); }
-
-  function ensureMin2(){
-    let r = readReg();
-    if (r.length >= 2) return r;
-    const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
-    const seed = [
-      { id:`giap:${today}-seedA`, title:'Student in Nairobi: water filter', tags:['water','innovation','sustainability'], date: Date.now() },
-      { id:`giap:${today}-seedB`, title:'Solar saline plantage', tags:['solar','desalination','sustainability'], date: Date.now() }
-    ];
-    if (r.length === 0) r = seed;
-    if (r.length === 1) r.push(seed[1]);
-    writeReg(r);
-    return r;
-  }
-
-  function jaccard(a=[], b=[]){
-    const A=new Set(a.map(x=>String(x).toLowerCase()));
-    const B=new Set(b.map(x=>String(x).toLowerCase()));
-    const inter=[...A].filter(x=>B.has(x)).length;
-    const uni=new Set([...A,...B]).size||1;
-    return inter/uni;
-  }
-
-  function showOverlay(a,b,score){
-    let o=document.getElementById('judge-overlay');
-    if(o) o.remove();
-    o=document.createElement('div'); o.id='judge-overlay';
-    Object.assign(o.style,{position:'fixed',inset:'0',background:'rgba(0,0,0,.45)',zIndex:'10000',display:'grid',placeItems:'center',padding:'16px'});
-
-    const card=document.createElement('div');
-    Object.assign(card.style,{background:'#fff',borderRadius:'12px',maxWidth:'820px',width:'100%',padding:'18px',boxShadow:'0 12px 36px rgba(0,0,0,.25)'});
-    card.innerHTML=`
-      <h3 style="margin:0 0 10px">How GIAP links ideas</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
-          <div style="font-weight:700">Idea A</div>
-          <div><small>${a.id||''}</small></div>
-          <div style="margin-top:6px">${a.title||'(no title)'}</div>
-          <div style="color:#555;margin-top:6px"><small>Tags: ${(a.tags||[]).join(', ')||'—'}</small></div>
-        </div>
-        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
-          <div style="font-weight:700">Idea B</div>
-          <div><small>${b.id||''}</small></div>
-          <div style="margin-top:6px">${b.title||'(no title)'}</div>
-          <div style="color:#555;margin-top:6px"><small>Tags: ${(b.tags||[]).join(', ')||'—'}</small></div>
-        </div>
-      </div>
-      <div style="margin:12px 0 6px">Similarity (tags): <b>${(score*100).toFixed(0)}%</b></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-        <button id="judge-close" class="secondary" style="background:#fff;color:#111;border:1px solid #111;border-radius:10px;padding:8px 12px;cursor:pointer">Close</button>
-      </div>`;
-    o.appendChild(card);
-    document.body.appendChild(o);
-    document.getElementById('judge-close').onclick=()=>o.remove();
-  }
-
-  btn.addEventListener('click', () => {
-    const reg = ensureMin2();
-    const i = Math.floor(Math.random()*reg.length);
-    let j = Math.floor(Math.random()*reg.length);
-    if (reg.length>1) while (j===i) j = Math.floor(Math.random()*reg.length);
-    const A = reg[i], B = reg[j];
-    showOverlay(A,B, jaccard(A.tags||[], B.tags||[]));
-  });
-
-  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(btn));
-})();
-</script>
-
-<!-- Klickbare GIAP-IDs + Kopieren/Teilen + optionaler Protocol-Handler -->
-<script>
-(function () {
-  'use strict';
-
-  if ('registerProtocolHandler' in navigator) {
-    try {
-      navigator.registerProtocolHandler(
-        'web+giap',
-        location.origin + location.pathname + '?id=%s',
-        'GIAP Handler'
-      );
-    } catch(_) {}
-  }
-
-  function permalinkFor(id) {
-    const u = new URL(location.href);
-    u.searchParams.set('id', id);
-    return u.pathname + '?' + u.searchParams.toString();
-  }
-  async function copy(text) {
-    try { await navigator.clipboard.writeText(text); alert('Adresse kopiert:\n' + text); }
-    catch { alert('Konnte nicht kopieren.'); }
-  }
-
-  function enhanceIdeaIds(root) {
-    // Erkennt giap:YYYYMMDD-… und giap://…
-    const rx = /(giap:[^\s,;<>"]+|giap:\/\/[^\s,;<>"]+)/ig;
-
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-    const nodes = [];
-    while (walker.nextNode()) {
-      const n = walker.currentNode;
-      if (rx.test(n.nodeValue)) nodes.push(n);
-      rx.lastIndex = 0;
-    }
-    nodes.forEach(n => {
-      const frag = document.createDocumentFragment();
-      const parts = n.nodeValue.split(rx);
-      for (let i=0;i<parts.length;i++) {
-        const chunk = parts[i];
-        if (!chunk) continue;
-        if (/^giap:|^giap:\/\//i.test(chunk)) {
-          const id = chunk;
-          const a = document.createElement('a');
-          a.href = permalinkFor(id);
-          a.textContent = id;
-          a.style.textDecoration = 'underline';
-          a.style.cursor = 'pointer';
-          a.title = 'Open permalink';
-
-          const copyBtn = document.createElement('button');
-          copyBtn.textContent = 'kopieren';
-          copyBtn.style.marginLeft = '8px';
-          copyBtn.onclick = (e)=>{ e.preventDefault(); copy(id); };
-
-          const shareBtn = document.createElement('button');
-          shareBtn.textContent = 'teilen';
-          shareBtn.style.marginLeft = '6px';
-          shareBtn.onclick = async (e)=> {
-            e.preventDefault();
-            const url = location.origin + permalinkFor(id);
-            if (navigator.share) {
-              try { await navigator.share({title:'GIAP Idea', text:id, url}); } catch {}
-            } else {
-              await copy(url);
-            }
-          };
-
-          frag.appendChild(a);
-          frag.appendChild(copyBtn);
-          frag.appendChild(shareBtn);
-        } else {
-          frag.appendChild(document.createTextNode(chunk));
-        }
-      }
-      n.parentNode.replaceChild(frag, n);
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    enhanceIdeaIds(document.body);
-    const mo = new MutationObserver(muts => muts.forEach(m=> enhanceIdeaIds(m.target)));
-    mo.observe(document.body, {subtree:true, childList:true, characterData:true});
-  });
-})();
-</script>
 
 <header>
   <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>
@@ -325,21 +152,273 @@
   </section>
 </main>
 
-<!-- Smooth scroll for CTAs -->
+<!-- Floating: Judge This Idea (Overlay & Auto-Seeding) -->
 <script>
-document.addEventListener('click', (e)=>{
-  const a = e.target.closest('a[href^="#"]');
-  if(!a) return;
-  const id = a.getAttribute('href').slice(1);
-  const el = document.getElementById(id);
-  if(el){
-    e.preventDefault();
-    el.scrollIntoView({behavior:'smooth', block:'start'});
+(function () {
+  'use strict';
+  const STORAGE_KEY = 'giap_registry_v1';
+
+  function readReg(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
+  function writeReg(v){ localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); }
+  function ensureMin2(){
+    let r = readReg();
+    if (r.length >= 2) return r;
+    const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    const seed = [
+      { id:`giap:${today}-seedA`, title:'Student in Nairobi: water filter', tags:['water','innovation','sustainability'], date: Date.now() },
+      { id:`giap:${today}-seedB`, title:'Solar saline plantage', tags:['solar','desalination','sustainability'], date: Date.now() }
+    ];
+    if (r.length === 0) r = seed;
+    if (r.length === 1) r.push(seed[1]);
+    writeReg(r);
+    return r;
   }
-});
+  function jaccard(a=[], b=[]){
+    const A=new Set(a.map(x=>String(x).toLowerCase()));
+    const B=new Set(b.map(x=>String(x).toLowerCase()));
+    const inter=[...A].filter(x=>B.has(x)).length;
+    const uni=new Set([...A,...B]).size||1;
+    return inter/uni;
+  }
+  function showOverlay(a,b,score){
+    const old = document.getElementById('judge-overlay'); if (old) old.remove();
+    const o=document.createElement('div'); o.id='judge-overlay';
+    Object.assign(o.style,{position:'fixed',inset:'0',background:'rgba(0,0,0,.45)',zIndex:'10000',display:'grid',placeItems:'center',padding:'16px'});
+    const card=document.createElement('div');
+    Object.assign(card.style,{background:'#fff',borderRadius:'12px',maxWidth:'820px',width:'100%',padding:'18px',boxShadow:'0 12px 36px rgba(0,0,0,.25)'});
+    card.innerHTML=`
+      <h3 style="margin:0 0 10px">How GIAP links ideas</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
+          <div style="font-weight:700">Idea A</div>
+          <div><small>${a.id||''}</small></div>
+          <div style="margin-top:6px">${a.title||'(no title)'}</div>
+          <div style="color:#555;margin-top:6px"><small>Tags: ${(a.tags||[]).join(', ')||'—'}</small></div>
+        </div>
+        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
+          <div style="font-weight:700">Idea B</div>
+          <div><small>${b.id||''}</small></div>
+          <div style="margin-top:6px">${b.title||'(no title)'}</div>
+          <div style="color:#555;margin-top:6px"><small>Tags: ${(b.tags||[]).join(', ')||'—'}</small></div>
+        </div>
+      </div>
+      <div style="margin:12px 0 6px">Similarity (tags): <b>${(score*100).toFixed(0)}%</b></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button id="judge-close" class="secondary" style="background:#fff;color:#111;border:1px solid #111;border-radius:10px;padding:8px 12px;cursor:pointer">Close</button>
+      </div>`;
+    o.appendChild(card); document.body.appendChild(o);
+    document.getElementById('judge-close').onclick=()=>o.remove();
+  }
+  function mountJudge(){
+    const btn = document.createElement('button');
+    btn.textContent = 'Judge This Idea';
+    Object.assign(btn.style,{position:'fixed',bottom:'20px',right:'20px',padding:'10px 16px',background:'#111',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer',zIndex:'9999',fontSize:'14px',boxShadow:'0 4px 12px rgba(0,0,0,.2)'});
+    btn.addEventListener('click', () => {
+      const reg = ensureMin2();
+      const i = Math.floor(Math.random()*reg.length);
+      let j = Math.floor(Math.random()*reg.length);
+      if (reg.length>1) while (j===i) j = Math.floor(Math.random()*reg.length);
+      const A = reg[i], B = reg[j];
+      showOverlay(A,B, jaccard(A.tags||[], B.tags||[]));
+    });
+    document.body.appendChild(btn);
+  }
+  if (document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', mountJudge); } else { mountJudge(); }
+})();
 </script>
 
-<!-- Deine bestehende Logik (Hashing, Speichern etc.) -->
-<script src="./script.js"></script>
+<!-- Klickbare GIAP-IDs + Kopieren/Teilen + optionaler Protocol-Handler -->
+<script>
+(function () {
+  'use strict';
+  if ('registerProtocolHandler' in navigator) {
+    try {
+      navigator.registerProtocolHandler('web+giap', location.origin + location.pathname + '?id=%s', 'GIAP Handler');
+    } catch(_) {}
+  }
+  function permalinkFor(id){ const u = new URL(location.href); u.searchParams.set('id', id); return u.pathname + '?' + u.searchParams.toString(); }
+  async function copy(text){ try{ await navigator.clipboard.writeText(text); alert('Adresse kopiert:\n' + text); }catch{ alert('Konnte nicht kopieren.'); } }
+  function enhanceIdeaIds(root){
+    const rx = /(giap:[^\s,;<>"]+|giap:\/\/[^\s,;<>"]+)/ig;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    while (walker.nextNode()) { const n = walker.currentNode; if (rx.test(n.nodeValue)) nodes.push(n); rx.lastIndex = 0; }
+    nodes.forEach(n=>{
+      const frag=document.createDocumentFragment(); const parts=n.nodeValue.split(rx);
+      for (let i=0;i<parts.length;i++){
+        const chunk = parts[i]; if(!chunk) continue;
+        if (/^giap:|^giap:\/\//i.test(chunk)){
+          const id = chunk;
+          const a=document.createElement('a'); a.href=permalinkFor(id); a.textContent=id; a.style.textDecoration='underline'; a.style.cursor='pointer'; a.title='Open permalink';
+          const copyBtn=document.createElement('button'); copyBtn.textContent='kopieren'; copyBtn.className='pill-btn'; copyBtn.onclick=(e)=>{e.preventDefault(); copy(id);};
+          const shareBtn=document.createElement('button'); shareBtn.textContent='teilen'; shareBtn.className='pill-btn'; shareBtn.onclick=async(e)=>{e.preventDefault(); const url=location.origin+permalinkFor(id); if(navigator.share){try{await navigator.share({title:'GIAP Idea',text:id,url});}catch{}} else {copy(url);} };
+          const wrap=document.createElement('span'); wrap.className='id-cell'; wrap.appendChild(a); const gap=document.createTextNode(' '); wrap.appendChild(gap); wrap.appendChild(copyBtn); wrap.appendChild(document.createTextNode(' ')); wrap.appendChild(shareBtn);
+          frag.appendChild(wrap);
+        } else { frag.appendChild(document.createTextNode(chunk)); }
+      }
+      n.parentNode.replaceChild(frag, n);
+    });
+  }
+  function apply(){ enhanceIdeaIds(document.body); const mo=new MutationObserver(muts=>muts.forEach(m=>enhanceIdeaIds(m.target))); mo.observe(document.body,{subtree:true,childList:true,characterData:true}); }
+  if (document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', apply);} else { apply(); }
+})();
+</script>
+
+<!-- App-Logik: Hashing, Speichern, Rendern, Import/Export -->
+<script>
+(function(){
+  'use strict';
+  const STORAGE_KEY = 'giap_registry_v1';
+  const $ = (sel)=>document.querySelector(sel);
+  const $$ = (sel)=>document.querySelectorAll(sel);
+
+  // UI-Refs
+  const taIdea = $('#idea');
+  const inpTags = $('#tags');
+  const btnChurch = $('#btn-churchen');
+  const btnClear = $('#btn-clear');
+  const secResult = $('#result');
+  const outId = $('#ideaId');
+  const outHash = $('#hash');
+  const btnCopyId = $('#btn-copy');
+  const btnCopyUrl = $('#btn-copy-url');
+  const tblBody = $('#tbl tbody');
+  const btnExport = $('#btn-export');
+  const inpImport = $('#file-import');
+
+  // Helpers
+  const todayStr = ()=>new Date().toISOString().slice(0,10).replace(/-/g,'');
+  function readReg(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); } catch { return []; } }
+  function writeReg(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+  function parseTags(s){ return (s||'').split(',').map(t=>t.trim()).filter(Boolean); }
+  async function sha256Hex(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    const arr = Array.from(new Uint8Array(buf));
+    return arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  function ideaIdFrom(hashPrefix){ return `giap:${todayStr()}-${hashPrefix}`; }
+
+  // Render registry
+  function render(){
+    const list = readReg().sort((a,b)=>b.date-a.date);
+    tblBody.innerHTML = '';
+    for (const it of list){
+      const tr = document.createElement('tr');
+
+      const tdId = document.createElement('td');
+      tdId.textContent = it.id; // wird vom Enhancer in Link + Buttons verwandelt
+      tr.appendChild(tdId);
+
+      const tdPrev = document.createElement('td');
+      tdPrev.textContent = it.title || '(no title)';
+      tr.appendChild(tdPrev);
+
+      const tdDate = document.createElement('td');
+      const d = new Date(it.date||Date.now());
+      tdDate.textContent = d.toLocaleString();
+      tr.appendChild(tdDate);
+
+      const tdAct = document.createElement('td');
+      const bCopy = document.createElement('button'); bCopy.textContent='kopieren'; bCopy.className='pill-btn';
+      bCopy.onclick = async ()=>{ try{ await navigator.clipboard.writeText(it.id); alert('Adresse kopiert:\n'+it.id);}catch{} };
+      const bLoad = document.createElement('button'); bLoad.textContent='laden'; bLoad.className='pill-btn';
+      bLoad.onclick = ()=>{ taIdea.value = it.title||''; inpTags.value = (it.tags||[]).join(', '); window.scrollTo({top:0, behavior:'smooth'}); };
+      const bDel = document.createElement('button'); bDel.textContent='löschen'; bDel.className='pill-btn';
+      bDel.onclick = ()=>{ const cur = readReg().filter(x=>x.id!==it.id); writeReg(cur); render(); };
+
+      tdAct.appendChild(bCopy); tdAct.appendChild(document.createTextNode(' '));
+      tdAct.appendChild(bLoad); tdAct.appendChild(document.createTextNode(' '));
+      tdAct.appendChild(bDel);
+      tr.appendChild(tdAct);
+
+      tblBody.appendChild(tr);
+    }
+  }
+
+  // Churchen
+  btnChurch.addEventListener('click', async ()=>{
+    const title = (taIdea.value||'').trim();
+    const tags = parseTags(inpTags.value);
+    if (!title){ alert('Please write your idea first.'); return; }
+    const hash = await sha256Hex(title + '||' + tags.join('|'));
+    const id = ideaIdFrom(hash.slice(0,10));
+    const entry = { id, title, tags, hash, date: Date.now() };
+
+    const reg = readReg();
+    // Duplikat vermeiden (gleiche ID)
+    if (!reg.some(x=>x.id===id)) reg.push(entry);
+    writeReg(reg);
+
+    outId.value = id;
+    outHash.value = hash;
+    secResult.style.display = '';
+    render();
+  });
+
+  btnClear.addEventListener('click', ()=>{
+    taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value='';
+  });
+
+  // Copy buttons
+  btnCopyId.addEventListener('click', async ()=>{
+    try{ await navigator.clipboard.writeText(outId.value||''); alert('IdeaID kopiert.'); }catch{}
+  });
+  btnCopyUrl.addEventListener('click', async ()=>{
+    const url = location.origin + location.pathname + '?id=' + encodeURIComponent(outId.value||'');
+    try{ await navigator.clipboard.writeText(url); alert('Permalink kopiert.'); }catch{}
+  });
+
+  // Export / Import
+  btnExport.addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(readReg(), null, 2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'giap_registry.json'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  });
+  inpImport.addEventListener('change', (e)=>{
+    const file = e.target.files && e.target.files[0]; if(!file) return;
+    const fr = new FileReader();
+    fr.onload = ()=>{
+      try{
+        const data = JSON.parse(fr.result||'[]');
+        const cur = readReg();
+        const map = new Map(cur.map(x=>[x.id,x]));
+        for (const it of (Array.isArray(data)?data:[])){ if (it && it.id && !map.has(it.id)) map.set(it.id, it); }
+        writeReg(Array.from(map.values()));
+        render();
+        alert('Import erfolgreich.');
+      }catch{ alert('Import fehlgeschlagen.'); }
+    };
+    fr.readAsText(file);
+  });
+
+  // Smooth scroll for hash links
+  document.addEventListener('click', (e)=>{
+    const a = e.target.closest('a[href^="#"]'); if(!a) return;
+    const id = a.getAttribute('href').slice(1); const el = document.getElementById(id);
+    if (el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+
+  // Deep link: ?id=...
+  function handleDeepLink(){
+    const q = new URLSearchParams(location.search); const id = q.get('id'); if(!id) return;
+    // Falls vorhanden, fülle Result-Feld, ansonsten nur anzeigen
+    const reg = readReg(); const found = reg.find(x=>x.id===id);
+    outId.value = id; outHash.value = found? (found.hash||'') : '';
+    secResult.style.display = '';
+    // Scrollen zum Result-Block
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  }
+
+  // Initial
+  if (document.readyState==='loading') {
+    document.addEventListener('DOMContentLoaded', ()=>{ render(); handleDeepLink(); });
+  } else {
+    render(); handleDeepLink();
+  }
+})();
+</script>
+
 </body>
 </html>
+
