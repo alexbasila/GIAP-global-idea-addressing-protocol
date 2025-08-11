@@ -1,188 +1,268 @@
-<!DOCTYPE html>
+
+<!doctype html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>GIAP · Churchen (MVP)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GIAP · Churchen (MVP · Local‑first)</title>
   <meta name="description" content="GIAP connects ideas, not people. Give each idea an address at birth." />
   <style>
-    :root{--w:900px}
+    :root{--w:980px;--bg:#0b0f14;--card:#111827;--muted:#9ca3af;--text:#e5e7eb;--accent:#60a5fa;--border:#1f2937}
     *{box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
-    header{padding:0;background:#fff;border-bottom:1px solid #eee}
-    h1{margin:0 0 6px;font-size:28px}
-    .sub{color:#444}
-    main{max-width:var(--w);margin:0 auto;padding:18px}
-    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
-    textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
-    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}
-    button.secondary{background:#fff;color:#111}
-    input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
-    code{background:#f2f2f2;border-radius:6px;padding:2px 6px}
-    .muted{color:#666;font-size:14px}
-    .grid{display:grid;grid-template-columns:1fr;gap:10px}
-    @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-    .table{width:100%;border-collapse:collapse}
-    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
-    .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .compare div{background:#f9f9f9;border-radius:8px;padding:12px;border:1px solid #ddd}
-    .compare h3{margin-top:0}
+    body{margin:0;background:linear-gradient(160deg,#0b0f14 0%,#0c1220 50%,#0b0f14 100%); color:var(--text); font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial}
+    header{border-bottom:1px solid var(--border);background:#0c1220}
+    .note{background:#0f172a;color:#cbd5e1;text-align:center;padding:10px 14px;font-size:13px}
+    .hero{max-width:var(--w);margin:0 auto;padding:40px 16px 22px;text-align:center}
+    .hero h1{font-size:38px;line-height:1.15;margin:0 0 6px}
+    .hero .lead{font-size:18px;color:#cbd5e1;max-width:820px;margin:0 auto 14px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+    .cta{display:inline-block;background:var(--accent);color:#081021;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent}
+    .cta.secondary{background:transparent;color:var(--text);border-color:var(--border)}
+    .value{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:880px;margin:16px auto 0}
+    .pill{background:#0b1220;border:1px solid var(--border);border-radius:999px;padding:10px 14px;font-size:14px;color:#cbd5e1}main{max-width:var(--w);margin:0 auto;padding:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h1,h2,h3{margin:0 0 8px}
+p{margin:8px 0}
+ul{margin:6px 0 10px 18px}
 
-    /* --- New: Hero / Value / CTA --- */
-    .hero{
-      max-width:var(--w); margin:0 auto; padding:48px 16px 28px 16px; text-align:center;
-    }
-    .hero h1{
-      font-size:34px; line-height:1.15; margin:0 0 10px;
-    }
-    .hero .lead{
-      font-size:18px; color:#555; max-width:800px; margin:0 auto 18px;
-    }
-    .cta{
-      display:inline-block; background:#111; color:#fff; padding:12px 20px; border-radius:10px; text-decoration:none; font-weight:700; border:1px solid #111;
-    }
-    .cta.secondary{background:#fff;color:#111}
-    .value{
-      display:grid; grid-template-columns:1fr; gap:10px; margin:18px auto 6px; max-width:860px; padding:0 16px 22px;
-    }
-    .value .pill{
-      background:#f6f6f6; border:1px solid #eee; border-radius:999px; padding:10px 14px; font-size:14px;
-    }
-    @media (min-width:800px){
-      .hero h1{font-size:40px}
-      .value{grid-template-columns:1fr 1fr 1fr}
-    }
-    .note-bar{
-      background:#0f172a; color:#fff; padding:10px 14px; text-align:center; font-size:14px;
-    }
+textarea{width:100%;min-height:140px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0b1220;color:var(--text);font:inherit}
+input[type=text],input[type=password]{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:#0b1220;color:#e5e7eb;font:inherit}
+
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
+
+button{padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#0b1220;color:var(--text);font-weight:700;cursor:pointer}
+button.primary{background:var(--accent);color:#081021;border-color:transparent}
+button:disabled{opacity:.5;cursor:not-allowed}
+
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.muted{color:#9ca3af;font-size:13px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:8px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
+pre{background:#0b1220;border:1px solid var(--border);padding:12px;border-radius:12px;overflow:auto;max-height:320px}
+.kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#0b1220;border:1px solid var(--border);padding:2px 6px;border-radius:6px;color:#cbd5e1}
+
+.tabs{display:flex;gap:8px;margin:10px 0}
+.tab{padding:8px 12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:#0b1220}
+.tab.active{background:var(--accent);color:#081021;border-color:transparent;font-weight:800}
+.hidden{display:none}
+
   </style>
 </head>
 <body>
   <header>
-    <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>
+    <div class="note">Private MVP • 100% client‑side • Nothing leaves your browser</div>
     <div class="hero">
       <h1>Every Idea. One Click. Global Reach.</h1>
-      <p class="lead">
-        GIAP (Global Idea Addressing Protocol) gives every idea a unique, permanent address at birth — no gatekeepers, no delay. 
-        You think it, and it’s connected.
-      </p>
-      <div class="row" style="justify-content:center; margin-top:14px">
+      <p class="lead">GIAP (Global Idea Addressing Protocol) gives every idea a unique, permanent address at birth — no gatekeepers, no delay. You think it, and it’s connected. The Web connects people; <strong>GIAP connects only ideas</strong>.</p>
+      <div class="row" style="margin-top:8px">
         <a href="#demo" class="cta">Try it now</a>
         <a href="#learn" class="cta secondary">How it works</a>
       </div>
       <div class="value">
         <div class="pill">Address at birth (IdeaID)</div>
-        <div class="pill">Instant linkability &amp; discovery</div>
-        <div class="pill">Local-first · Privacy by design</div>
+        <div class="pill">Instant linkability & discovery</div>
+        <div class="pill">Local‑first · Privacy by design</div>
       </div>
     </div>
-  </header>
-
-  <main>
-    <!-- Info block from README -->
+  </header>  <main>
+    <!-- Pitch / Learn -->
     <section class="card" id="learn">
       <h1>GIAP – Global Idea Addressing Protocol</h1>
-      <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>
-      The net connects people; <strong>GIAP connects only ideas</strong>.</p>
+      <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong> The net connects people; <strong>GIAP connects only ideas</strong>.</p><h2>What is GIAP?</h2>
+  <ul>
+    <li>Assigns a unique, permanent address to each idea at the moment of its creation.</li>
+    <li>Instantly connects it to matching ideas worldwide – independent of person, status, or location.</li>
+    <li>Visibility & access are controlled by the originator (consent, scopes, pseudonymous possible).</li>
+  </ul>
 
-      <h2>What is GIAP?</h2>
-      <p>GIAP (Global Idea Addressing Protocol) is a neutral, global protocol layer that:</p>
-      <ul>
-        <li>Assigns a unique, permanent address to each idea at the moment of its creation.</li>
-        <li>Instantly connects it to matching ideas worldwide – independent of person, status, or location.</li>
-        <li>Gives control of visibility and access rights to the originator.</li>
-      </ul>
+  <h2>Example</h2>
+  <div class="grid2">
+    <div class="card" style="margin:0">
+      <h3>Without GIAP</h3>
+      <p>A student in Nairobi imagines a new water filter. Years of chance, networking and luck pass before it reaches the right people.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <h3>With GIAP</h3>
+      <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore — regardless of who the originator is.</p>
+    </div>
+  </div>
+</section>
 
-      <h2>Example</h2>
-      <div class="compare">
-        <div>
-          <h3>Without GIAP</h3>
-          <p>A student in Nairobi imagines a new water filter. Years of chance connections, networking, and luck are needed before it reaches the right people.</p>
-        </div>
-        <div>
-          <h3>With GIAP</h3>
-          <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore – no matter who the originator is.</p>
-        </div>
-      </div>
+<!-- Demo Tabs: Compose / Search / Upload -->
+<div class="tabs">
+  <div class="tab active" data-tab="compose">Compose</div>
+  <div class="tab" data-tab="search">Search</div>
+  <div class="tab" data-tab="upload">Upload → GitHub</div>
+</div>
 
-      <h2>What is Churchen?</h2>
-      <p><strong>Churchen</strong> is the act of connection – the moment an idea becomes an address in the idea network.
-      The originator only has to think; GIAP does the rest.</p>
+<!-- Compose -->
+<section class="card" id="tab-compose">
+  <h2 id="demo">1) Capture Idea → Assign Address</h2>
+  <div class="grid2">
+    <div>
+      <label>Title</label>
+      <input id="title" type="text" placeholder="Title (≤ 80 chars)" maxlength="80" />
+    </div>
+    <div>
+      <label>Tags</label>
+      <input id="tags" type="text" placeholder="Tags (comma separated, e.g. linked-data,protocol,did)" />
+    </div>
+  </div>
+  <label style="display:block;margin-top:8px">Abstract</label>
+  <textarea id="abstract" placeholder="Abstract (3–5 sentences). What is it? Why now? Why different?"></textarea>
+  <div class="grid2">
+    <input id="provenance" type="text" placeholder="Provenance / notes (optional)" />
+    <input id="sensitivity" type="text" placeholder="Sensitivity: low | medium | high" />
+  </div>
+  <div class="row" style="justify-content:flex-start;margin-top:10px">
+    <button class="primary" id="btn-churchen">Churchen • give address</button>
+    <button id="btn-download" disabled>Download JSON</button>
+    <button id="btn-copy" disabled>Copy JSON</button>
+    <button id="btn-clear">Clear</button>
+  </div>
+  <p class="muted" style="margin-top:6px">By clicking <em>Churchen</em> you assign a local, permanent <span class="kbd">idea_id</span>. Nothing leaves your browser. Autofill via URL: <span class="kbd">?title=&abstract=&tags=&auto=1</span></p>
 
-      <h2>Feedback (Resonance Test)</h2>
-      <ul>
-        <li>Would you use such a system?</li>
-        <li>What would stop you from connecting your ideas this way?</li>
-      </ul>
-    </section>
+  <h3 style="margin-top:16px">Result • GIAP export</h3>
+  <pre id="out">{ /* waiting… */ }</pre>
+  <div class="muted">Deep‑link preview: <span id="deeplink">—</span></div>
+  <div class="muted" style="margin-top:4px">Stored locally under <span class="kbd">localStorage['giap_registry']</span>.</div>
+</section>
 
-    <!-- Unverändert in Funktion, nur mit id="demo" ergänzt -->
-    <section class="card" id="demo">
-      <h2>1) Capture Idea → Assign Address</h2>
-      <textarea id="idea" placeholder="Write your idea here…"></textarea>
-      <div class="row">
-        <button id="btn-churchen">Assign Address (churchen)</button>
-        <button id="btn-clear" class="secondary">Clear</button>
-      </div>
-      <p class="muted">Note: Everything runs locally in your browser. No content is sent to any server – stored only in your LocalStorage.</p>
-    </section>
+<!-- Search -->
+<section class="card hidden" id="tab-search">
+  <h2>Search (local registry + optional remote index)</h2>
+  <div class="grid2">
+    <input id="q" type="text" placeholder="Search text or #tag" />
+    <input id="remoteIndex" type="text" placeholder="Optional remote index.json URL (e.g. https://.../registry.json)" />
+  </div>
+  <div class="row" style="justify-content:flex-start;margin-top:10px">
+    <button id="btn-run-search" class="primary">Search</button>
+    <button id="btn-clear-search">Clear</button>
+  </div>
+  <div id="results" style="margin-top:8px"></div>
+  <p class="muted">Local results come from your browser. Remote results are fetched read‑only from a JSON index if provided.</p>
+</section>
 
-    <section class="card" id="result" style="display:none">
-      <h2>Address</h2>
-      <div class="grid">
-        <div>
-          <label>IdeaID</label>
-          <input id="ideaId" type="text" readonly class="mono" />
-        </div>
-        <div>
-          <label>Content Hash (SHA-256)</label>
-          <input id="hash" type="text" readonly class="mono" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <button id="btn-copy" class="secondary">Copy IdeaID</button>
-        <button id="btn-copy-url" class="secondary">Copy Permalink</button>
-      </div>
-      <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
-    </section>
+<!-- Upload -->
+<section class="card hidden" id="tab-upload">
+  <h2>Upload last export to GitHub (optional)</h2>
+  <div class="grid2">
+    <input id="ghOwner" type="text" placeholder="owner (e.g. alexbasila)" />
+    <input id="ghRepo" type="text" placeholder="repo (e.g. giap-registry)" />
+  </div>
+  <div class="grid2">
+    <input id="ghPath" type="text" placeholder="path (e.g. data/<idea_id>.json)" />
+    <input id="ghMsg" type="text" placeholder="Commit message (e.g. add idea entry)" />
+  </div>
+  <input id="ghToken" type="password" placeholder="GitHub Personal Access Token (repo scope) — stays in your browser" />
+  <div class="row" style="justify-content:flex-start;margin-top:10px">
+    <button id="btn-upload" class="primary">Upload JSON to GitHub</button>
+  </div>
+  <pre id="uploadLog" class="muted">—</pre>
+  <p class="muted">Uses GitHub REST API <span class="kbd">PUT /repos/{owner}/{repo}/contents/{path}</span>. Your token is never sent anywhere except GitHub.</p>
+</section>
 
-    <section class="card">
-      <h2>2) Local Register</h2>
-      <table class="table" id="tbl">
-        <thead><tr><th>IdeaID</th><th>Preview</th><th>Date</th><th>Action</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <div class="row" style="margin-top:8px">
-        <button id="btn-export" class="secondary">Export (.json)</button>
-        <label class="secondary" style="border:1px solid #111;padding:9px 12px;border-radius:10px;background:#fff;cursor:pointer">
-          Import (.json)
-          <input type="file" id="file-import" accept="application/json" style="display:none">
-        </label>
-      </div>
-    </section>
+<section class="card">
+  <h2>Spec sketch</h2>
+  <p><span class="kbd">idea_id = "giap://" + first12(sha256(title + "\n" + abstract + "\n" + tags))</span> • <span class="kbd">content‑addressable</span> • <span class="kbd">user‑consent</span></p>
+  <p class="muted">Ready for upgrade: public registry (Supabase/IPFS/S3+CDN) without changing this file.</p>
+</section>
 
-    <section class="card">
-      <h2>3) (Optional) Tags</h2>
-      <p class="muted">For later relevance matching – stored locally with the idea.</p>
-      <input id="tags" type="text" placeholder="e.g. linked-data, protocol, DID" />
-    </section>
-  </main>
+  </main><script>
+  // Smooth scroll for hero anchors
+  document.addEventListener('click',(e)=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);const el=document.getElementById(id);if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});}});
 
-  <script>
-    // Smooth scroll for the two CTAs; does nicht in deine bestehende Logik eingreifen
-    document.addEventListener('click', (e)=>{
-      const a = e.target.closest('a[href^="#"]');
-      if(!a) return;
-      const id = a.getAttribute('href').slice(1);
-      const el = document.getElementById(id);
-      if(el){
-        e.preventDefault();
-        el.scrollIntoView({behavior:'smooth', block:'start'});
-      }
-    });
-  </script>
-  <script src="./script.js"></script>
-</body>
+  // Tabs
+  const tabs=document.querySelectorAll('.tab');
+  tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');['compose','search','upload'].forEach(name=>{document.getElementById('tab-'+name).classList.toggle('hidden', t.dataset.tab!==name);});}));
+
+  // Compose logic
+  const $=(q)=>document.querySelector(q);
+  const enc=new TextEncoder();
+  const toHex=(buf)=>[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  async function sha256Hex(str){const d=await crypto.subtle.digest('SHA-256',enc.encode(str));return toHex(d);} 
+  function sanitizeTags(str){return (str||'').split(',').map(s=>s.trim().toLowerCase().replace(/\s+/g,'_')).filter(Boolean);} 
+  function nowISO(){return new Date().toISOString();}
+  function makeDeepLink(obj){const base=location.origin+location.pathname;const p=new URLSearchParams({title:obj.title,abstract:obj.abstract,tags:obj.tags.join(','),id:obj.idea_id});return base+'?'+p.toString();}
+  function saveLocal(entry){const key='giap_registry';const arr=JSON.parse(localStorage.getItem(key)||'[]');arr.unshift(entry);localStorage.setItem(key,JSON.stringify(arr));}
+  function getLocal(){return JSON.parse(localStorage.getItem('giap_registry')||'[]');}
+  function download(filename,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=filename;a.click();URL.revokeObjectURL(a.href);} 
+
+  async function doChurchen(){
+    const title=($('#title').value||'').trim();
+    const abstract=($('#abstract').value||'').trim();
+    const tags=sanitizeTags($('#tags').value);
+    const prov=($('#provenance').value||'').trim();
+    const sens=($('#sensitivity').value||'low').trim().toLowerCase();
+    const outEl=$('#out'); const deepEl=$('#deeplink');
+    if(!title||!abstract||tags.length===0){outEl.textContent=JSON.stringify({error:'Please provide title, abstract and at least one tag.'},null,2);return;}
+    const payload=title+'\n'+abstract+'\n'+tags.join(',');
+    const idea_hash_sha256=await sha256Hex(payload);
+    const idea_id='giap://'+idea_hash_sha256.slice(0,12);
+    const obj={title,abstract,tags,provenance:prov||undefined,sensitivity:sens,confidence:0.5,timestamp_iso8601:nowISO(),idea_hash_sha256,idea_id};
+    obj.deep_link=makeDeepLink(obj);
+    outEl.textContent=JSON.stringify(obj,null,2);
+    deepEl.textContent=obj.deep_link;
+    saveLocal(obj);
+    $('#btn-download').disabled=false; $('#btn-copy').disabled=false;
+  }
+
+  $('#btn-churchen').addEventListener('click', doChurchen);
+  $('#btn-download').addEventListener('click',()=>{try{const data=$('#out').textContent;const j=JSON.parse(data);download(`${j.idea_id.replace('giap://','')}.json`,data);}catch(e){alert('Nothing to download.');}});
+  $('#btn-copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#out').textContent);}catch(e){alert('Copy failed.');}});
+  $('#btn-clear').addEventListener('click',()=>{$('#title').value='';$('#abstract').value='';$('#tags').value='';$('#provenance').value='';$('#sensitivity').value='';$('#out').textContent='{ /* waiting… */ }';$('#deeplink').textContent='—';$('#btn-download').disabled=true;$('#btn-copy').disabled=true;});
+
+  // Autofill from URL (?title=&abstract=&tags=&auto=1)
+  (function(){const u=new URL(location.href);const t=u.searchParams.get('title');const a=u.searchParams.get('abstract');const tg=u.searchParams.get('tags');const auto=u.searchParams.get('auto');if(t) $('#title').value=t;if(a) $('#abstract').value=a;if(tg) $('#tags').value=tg;if((t||a||tg)&&auto==='1'){setTimeout(()=>{doChurchen();},50);}})();
+
+  // Search (local + optional remote JSON index)
+  async function runSearch(){
+    const q=($('#q').value||'').trim().toLowerCase();
+    const remoteUrl=($('#remoteIndex').value||'').trim();
+    const resultsEl=$('#results'); resultsEl.innerHTML='';
+    const matches=(arr)=>arr.filter(e=>{if(!q) return true; const text=(e.title+'\n'+e.abstract+'\n'+(e.tags||[]).join(',')).toLowerCase(); if(q.startsWith('#')){const tag=q.slice(1); return (e.tags||[]).includes(tag);} return text.includes(q);});
+    const localHits=matches(getLocal());
+    if(localHits.length){resultsEl.insertAdjacentHTML('beforeend',`<div class="muted">Local results: ${localHits.length}</div>`);} 
+    localHits.forEach(e=>resultsEl.insertAdjacentHTML('beforeend',renderItem(e)));
+    if(remoteUrl){
+      try{const r=await fetch(remoteUrl,{mode:'cors'});const data=await r.json();const list=Array.isArray(data)?data:(data.items||[]);const remoteHits=matches(list);resultsEl.insertAdjacentHTML('beforeend',`<div class="muted" style="margin-top:10px">Remote results: ${remoteHits.length}</div>`);remoteHits.forEach(e=>resultsEl.insertAdjacentHTML('beforeend',renderItem(e)));}
+      catch(err){resultsEl.insertAdjacentHTML('beforeend',`<div class="muted">Remote index failed to load.</div>`);}
+    }
+  }
+  function renderItem(e){
+    const tags=(e.tags||[]).map(t=>`<span class="kbd">#${t}</span>`).join(' ');
+    const dl=e.deep_link || (e.idea_id? (location.origin+location.pathname+`?id=${encodeURIComponent(e.idea_id)}`): '#');
+    return `<div class="card" style="margin:10px 0"><div><strong>${escapeHtml(e.title||'Untitled')}</strong></div>
+      <div class="muted" style="margin:6px 0">${escapeHtml((e.abstract||'').slice(0,260))}...</div>
+      <div class="muted">${tags}</div>
+      <div class="muted">ID: <span class="kbd">${e.idea_id||'—'}</span> • <a href="${dl}" target="_blank">open</a></div></div>`;
+  }
+  function escapeHtml(str){return (str||'').replace(/[&<>\"]/g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s]));}
+  $('#btn-run-search').addEventListener('click', runSearch);
+  $('#btn-clear-search').addEventListener('click',()=>{$('#q').value='';$('#results').innerHTML='';});
+
+  // Optional GitHub upload of last JSON
+  async function uploadToGitHub(){
+    const owner=($('#ghOwner').value||'').trim();
+    const repo=($('#ghRepo').value||'').trim();
+    let path=($('#ghPath').value||'').trim();
+    const token=($('#ghToken').value||'').trim();
+    const msg=($('#ghMsg').value||'add idea entry').trim();
+    const log=$('#uploadLog'); log.textContent='—';
+    if(!owner||!repo||!path||!token){log.textContent='Missing owner/repo/path/token';return;}
+    let data; try{data=JSON.parse($('#out').textContent);}catch(e){log.textContent='No JSON to upload';return;}
+    if(!path.includes('.json')){path=(path.replace(/\/$/,'')||'data')+`/${data.idea_id.replace('giap://','')}.json`;}
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    const url=`https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    try{
+      const resp=await fetch(url,{method:'PUT',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({message:msg,content})});
+      if(!resp.ok){const txt=await resp.text(); throw new Error(txt||resp.statusText);} 
+      const j=await resp.json();
+      log.textContent=`Uploaded → ${j.content && j.content.path ? j.content.path : path}`;
+    }catch(err){log.textContent='Upload failed: '+(err.message||String(err));}
+  }
+  $('#btn-upload').addEventListener('click', uploadToGitHub);
+</script></body>
 </html>
