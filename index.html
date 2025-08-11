@@ -1,65 +1,49 @@
-<html lang="en">  
-<head>  
-  <meta charset="UTF-8" />  
-  <title>GIAP · Churchen (MVP)</title>  
-  <meta name="viewport" content="width=device-width, initial-scale=1" />  
-  <meta name="description" content="GIAP connects ideas, not people. Give each idea an address at birth." />  
-  <style>  
-    :root{--w:900px}  
-    *{box-sizing:border-box}  
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}  
-    header{padding:0;background:#fff;border-bottom:1px solid #eee}  
-    h1{margin:0 0 6px;font-size:28px}  
-    .sub{color:#444}  
-    main{max-width:var(--w);margin:0 auto;padding:18px}  
-    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}  
-    textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}  
-    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}  
-    button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}  
-    button.secondary{background:#fff;color:#111}  
-    input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}  
-    code{background:#f2f2f2;border-radius:6px;padding:2px 6px}  
-    .muted{color:#666;font-size:14px}  
-    .grid{display:grid;grid-template-columns:1fr;gap:10px}  
-    @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}  
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}  
-    .table{width:100%;border-collapse:collapse}  
-    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}  
-    .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}  
-    .compare div{background:#f9f9f9;border-radius:8px;padding:12px;border:1px solid #ddd}  
-    .compare h3{margin-top:0}  /* --- New: Hero / Value / CTA --- */  
-.hero{  
-  max-width:var(--w); margin:0 auto; padding:48px 16px 28px 16px; text-align:center;  
-}  
-.hero h1{  
-  font-size:34px; line-height:1.15; margin:0 0 10px;  
-}  
-.hero .lead{  
-  font-size:18px; color:#555; max-width:800px; margin:0 auto 18px;  
-}  
-.cta{  
-  display:inline-block; background:#111; color:#fff; padding:12px 20px; border-radius:10px; text-decoration:none; font-weight:700; border:1px solid #111;  
-}  
-.cta.secondary{background:#fff;color:#111}  
-.value{  
-  display:grid; grid-template-columns:1fr; gap:10px; margin:18px auto 6px; max-width:860px; padding:0 16px 22px;  
-}  
-.value .pill{  
-  background:#f6f6f6; border:1px solid #eee; border-radius:999px; padding:10px 14px; font-size:14px;  
-}  
-@media (min-width:800px){  
-  .hero h1{font-size:40px}  
-  .value{grid-template-columns:1fr 1fr 1fr}  
-}  
-.note-bar{  
-  background:#0f172a; color:#fff; padding:10px 14px; text-align:center; font-size:14px;  
-}
 
-  </style>  
-</head>  
-<body>  
-  
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GIAP · Churchen (MVP)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GIAP connects ideas, not people. Give each idea an address at birth." />
+  <style>
+    :root{--w:900px}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
+    header{padding:0;background:#fff;border-bottom:1px solid #eee}
+    h1{margin:0 0 6px;font-size:28px}
+    .sub{color:#444}
+    main{max-width:var(--w);margin:0 auto;padding:18px}
+    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
+    textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}
+    button.secondary{background:#fff;color:#111}
+    input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
+    code{background:#f2f2f2;border-radius:6px;padding:2px 6px}
+    .muted{color:#666;font-size:14px}
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .compare div{background:#f9f9f9;border-radius:8px;padding:12px;border:1px solid #ddd}
+    .compare h3{margin-top:0}
+    /* Hero / Value / CTA */
+    .hero{max-width:var(--w); margin:0 auto; padding:48px 16px 28px 16px; text-align:center;}
+    .hero h1{font-size:34px; line-height:1.15; margin:0 0 10px;}
+    .hero .lead{font-size:18px; color:#555; max-width:800px; margin:0 auto 18px;}
+    .cta{display:inline-block; background:#111; color:#fff; padding:12px 20px; border-radius:10px; text-decoration:none; font-weight:700; border:1px solid #111;}
+    .cta.secondary{background:#fff;color:#111}
+    .value{display:grid; grid-template-columns:1fr; gap:10px; margin:18px auto 6px; max-width:860px; padding:0 16px 22px;}
+    .value .pill{background:#f6f6f6; border:1px solid #eee; border-radius:999px; padding:10px 14px; font-size:14px;}
+    @media (min-width:800px){.hero h1{font-size:40px} .value{grid-template-columns:1fr 1fr 1fr}}
+    .note-bar{background:#0f172a; color:#fff; padding:10px 14px; text-align:center; font-size:14px;}
+  </style>
+</head>
+<body>
 
+<!-- Judge This Idea Button -->
 <script>
 (function() {
   'use strict';
@@ -107,12 +91,11 @@
 })();
 </script>
 
+<!-- Klickbare GIAP-IDs -->
 <script>
-// Klickbare GIAP-IDs + Teilen/Kopieren + optionaler Protokoll-Handler
 (function () {
   'use strict';
 
-  // Optional: web+giap://... auf diese Seite routen
   if ('registerProtocolHandler' in navigator) {
     try {
       navigator.registerProtocolHandler(
@@ -134,7 +117,8 @@
   }
 
   function enhanceIdeaIds(root) {
-    const rx = /(giap:\/\/[a-f0-9]{6,})/ig;
+    // Fix: erkennt giap:YYYYMMDD-… und giap://…
+    const rx = /(giap:[^\s,;<>"]+|giap:\/\/[^\s,;<>"]+)/ig;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
     const nodes = [];
     while (walker.nextNode()) {
@@ -148,7 +132,7 @@
       for (let i=0;i<parts.length;i++) {
         const chunk = parts[i];
         if (!chunk) continue;
-        if (chunk.startsWith && chunk.startsWith('giap://')) {
+        if (/^giap:|^giap:\/\//i.test(chunk)) {
           const id = chunk;
           const a = document.createElement('a');
           a.href = permalinkFor(id);
@@ -193,125 +177,123 @@
   });
 })();
 </script>
-  
-  <header>  
-    <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>  
-    <div class="hero">  
-      <h1>Every Idea. One Click. Global Reach.</h1>  
-      <p class="lead">  
-        GIAP (Global Idea Addressing Protocol) gives every idea a unique, permanent address at birth — no gatekeepers, no delay.   
-        You think it, and it’s connected.  
-      </p>  
-      <div class="row" style="justify-content:center; margin-top:14px">  
-        <a href="#demo" class="cta">Try it now</a>  
-        <a href="#learn" class="cta secondary">How it works</a>  
-      </div>  
-      <div class="value">  
-        <div class="pill">Address at birth (IdeaID)</div>  
-        <div class="pill">Instant linkability &amp; discovery</div>  
-        <div class="pill">Local-first · Privacy by design</div>  
-      </div>  
-    </div>  
-  </header>    <main>  
-    <!-- Info block from README -->  
-    <section class="card" id="learn">  
-      <h1>GIAP – Global Idea Addressing Protocol</h1>  
-      <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>  
-      The net connects people; <strong>GIAP connects only ideas</strong>.</p>  <h2>What is GIAP?</h2>  
-  <p>GIAP (Global Idea Addressing Protocol) is a neutral, global protocol layer that:</p>  
-  <ul>  
-    <li>Assigns a unique, permanent address to each idea at the moment of its creation.</li>  
-    <li>Instantly connects it to matching ideas worldwide – independent of person, status, or location.</li>  
-    <li>Gives control of visibility and access rights to the originator.</li>  
-  </ul>  
 
-  <h2>Example</h2>  
-  <div class="compare">  
-    <div>  
-      <h3>Without GIAP</h3>  
-      <p>A student in Nairobi imagines a new water filter. Years of chance connections, networking, and luck are needed before it reaches the right people.</p>  
-    </div>  
-    <div>  
-      <h3>With GIAP</h3>  
-      <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore – no matter who the originator is.</p>  
-    </div>  
-  </div>  
+<header>
+  <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>
+  <div class="hero">
+    <h1>Every Idea. One Click. Global Reach.</h1>
+    <p class="lead">
+      GIAP (Global Idea Addressing Protocol) gives every idea a unique, permanent address at birth — no gatekeepers, no delay.
+      You think it, and it’s connected.
+    </p>
+    <div class="row" style="justify-content:center; margin-top:14px">
+      <a href="#demo" class="cta">Try it now</a>
+      <a href="#learn" class="cta secondary">How it works</a>
+    </div>
+    <div class="value">
+      <div class="pill">Address at birth (IdeaID)</div>
+      <div class="pill">Instant linkability &amp; discovery</div>
+      <div class="pill">Local-first · Privacy by design</div>
+    </div>
+  </div>
+</header>
 
-  <h2>What is Churchen?</h2>  
-  <p><strong>Churchen</strong> is the act of connection – the moment an idea becomes an address in the idea network.  
-  The originator only has to think; GIAP does the rest.</p>  
-
-  <h2>Feedback (Resonance Test)</h2>  
-  <ul>  
-    <li>Would you use such a system?</li>  
-    <li>What would stop you from connecting your ideas this way?</li>  
-  </ul>  
-</section>  
-
-<!-- Unverändert in Funktion, nur mit id="demo" ergänzt -->  
-<section class="card" id="demo">  
-  <h2>1) Capture Idea → Assign Address</h2>  
-  <textarea id="idea" placeholder="Write your idea here…"></textarea>  
-  <div class="row">  
-    <button id="btn-churchen">Assign Address (churchen)</button>  
-    <button id="btn-clear" class="secondary">Clear</button>  
-  </div>  
-  <p class="muted">Note: Everything runs locally in your browser. No content is sent to any server – stored only in your LocalStorage.</p>  
-</section>  
-
-<section class="card" id="result" style="display:none">  
-  <h2>Address</h2>  
-  <div class="grid">  
-    <div>  
-      <label>IdeaID</label>  
-      <input id="ideaId" type="text" readonly class="mono" />  
-    </div>  
-    <div>  
-      <label>Content Hash (SHA-256)</label>  
-      <input id="hash" type="text" readonly class="mono" />  
-    </div>  
-  </div>  
-  <div class="row" style="margin-top:10px">  
-    <button id="btn-copy" class="secondary">Copy IdeaID</button>  
-    <button id="btn-copy-url" class="secondary">Copy Permalink</button>  
-  </div>  
-  <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>  
-</section>  
-
-<section class="card">  
-  <h2>2) Local Register</h2>  
-  <table class="table" id="tbl">  
-    <thead><tr><th>IdeaID</th><th>Preview</th><th>Date</th><th>Action</th></tr></thead>  
-    <tbody></tbody>  
-  </table>  
-  <div class="row" style="margin-top:8px">  
-    <button id="btn-export" class="secondary">Export (.json)</button>  
-    <label class="secondary" style="border:1px solid #111;padding:9px 12px;border-radius:10px;background:#fff;cursor:pointer">  
-      Import (.json)  
-      <input type="file" id="file-import" accept="application/json" style="display:none">  
-    </label>  
-  </div>  
-</section>  
-
-<section class="card">  
-  <h2>3) (Optional) Tags</h2>  
-  <p class="muted">For later relevance matching – stored locally with the idea.</p>  
-  <input id="tags" type="text" placeholder="e.g. linked-data, protocol, DID" />  
+<main>
+<section class="card" id="learn">
+  <h1>GIAP – Global Idea Addressing Protocol</h1>
+  <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>
+  The net connects people; <strong>GIAP connects only ideas</strong>.</p>
+  <h2>What is GIAP?</h2>
+  <ul>
+    <li>Assigns a unique, permanent address to each idea at the moment of its creation.</li>
+    <li>Instantly connects it to matching ideas worldwide – independent of person, status, or location.</li>
+    <li>Gives control of visibility and access rights to the originator.</li>
+  </ul>
+  <h2>Example</h2>
+  <div class="compare">
+    <div>
+      <h3>Without GIAP</h3>
+      <p>A student in Nairobi imagines a new water filter. Years of chance connections, networking, and luck are needed before it reaches the right people.</p>
+    </div>
+    <div>
+      <h3>With GIAP</h3>
+      <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore – no matter who the originator is.</p>
+    </div>
+  </div>
+  <h2>What is Churchen?</h2>
+  <p><strong>Churchen</strong> is the act of connection – the moment an idea becomes an address in the idea network.
+  The originator only has to think; GIAP does the rest.</p>
+  <h2>Feedback (Resonance Test)</h2>
+  <ul>
+    <li>Would you use such a system?</li>
+    <li>What would stop you from connecting your ideas this way?</li>
+  </ul>
 </section>
 
-  </main>    <script>  
-    // Smooth scroll for the two CTAs; does nicht in deine bestehende Logik eingreifen  
-    document.addEventListener('click', (e)=>{  
-      const a = e.target.closest('a[href^="#"]');  
-      if(!a) return;  
-      const id = a.getAttribute('href').slice(1);  
-      const el = document.getElementById(id);  
-      if(el){  
-        e.preventDefault();  
-        el.scrollIntoView({behavior:'smooth', block:'start'});  
-      }  
-    });  
-  </script>    <script src="./script.js"></script>  </body>  
-</html>  
+<section class="card" id="demo">
+  <h2>1) Capture Idea → Assign Address</h2>
+  <textarea id="idea" placeholder="Write your idea here…"></textarea>
+  <div class="row">
+    <button id="btn-churchen">Assign Address (churchen)</button>
+    <button id="btn-clear" class="secondary">Clear</button>
+  </div>
+  <p class="muted">Note: Everything runs locally in your browser. No content is sent to any server – stored only in your LocalStorage.</p>
+</section>
 
+<section class="card" id="result" style="display:none">
+  <h2>Address</h2>
+  <div class="grid">
+    <div>
+      <label>IdeaID</label>
+      <input id="ideaId" type="text" readonly class="mono" />
+    </div>
+    <div>
+      <label>Content Hash (SHA-256)</label>
+      <input id="hash" type="text" readonly class="mono" />
+    </div>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <button id="btn-copy" class="secondary">Copy IdeaID</button>
+    <button id="btn-copy-url" class="secondary">Copy Permalink</button>
+  </div>
+  <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
+</section>
+
+<section class="card">
+  <h2>2) Local Register</h2>
+  <table class="table" id="tbl">
+    <thead><tr><th>IdeaID</th><th>Preview</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="row" style="margin-top:8px">
+    <button id="btn-export" class="secondary">Export (.json)</button>
+    <label class="secondary" style="border:1px solid #111;padding:9px 12px;border-radius:10px;background:#fff;cursor:pointer">
+      Import (.json)
+      <input type="file" id="file-import" accept="application/json" style="display:none">
+    </label>
+  </div>
+</section>
+
+<section class="card">
+  <h2>3) (Optional) Tags</h2>
+  <p class="muted">For later relevance matching – stored locally with the idea.</p>
+  <input id="tags" type="text" placeholder="e.g. linked-data, protocol, DID" />
+</section>
+</main>
+
+<script>
+document.addEventListener('click', (e)=>{
+  const a = e.target.closest('a[href^="#"]');
+  if(!a) return;
+  const id = a.getAttribute('href').slice(1);
+  const el = document.getElementById(id);
+  if(el){
+    e.preventDefault();
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+});
+</script>
+<script src="./script.js"></script>
+</body>
+</html>
 
