@@ -58,6 +58,56 @@
   </style>  
 </head>  
 <body>  
+  
+
+<script>
+(function() {
+  'use strict';
+  const btn = document.createElement('button');
+  btn.textContent = 'Judge This Idea';
+  Object.assign(btn.style, {
+    position:'fixed', bottom:'20px', right:'20px',
+    padding:'10px 16px', background:'#111', color:'#fff',
+    border:'none', borderRadius:'8px', cursor:'pointer',
+    zIndex:'9999', fontSize:'14px', boxShadow:'0 4px 12px rgba(0,0,0,.2)'
+  });
+
+  btn.addEventListener('click', () => {
+    try {
+      const raw = localStorage.getItem('giap_registry_v1') || '[]';
+      const registry = JSON.parse(raw);
+      if (!registry.length) {
+        alert(
+          'GIAP gibt jeder Idee eine Adresse.\n\n' +
+          'Noch keine lokalen Ideen gespeichert.\n' +
+          '→ Erfasse oben eine Idee und klicke nochmals auf "Judge".'
+        );
+        return;
+      }
+      const a = registry[Math.floor(Math.random()*registry.length)];
+      const b = registry[Math.floor(Math.random()*registry.length)];
+      const lines = (o) => [
+        `Titel: ${o.title || '(ohne Titel)'}`,
+        `Tags: ${(o.tags||[]).join(', ') || '—'}`,
+        `Adresse: ${o.id || 'giap://…'}`
+      ].join('\n');
+
+      alert(
+        'GIAP gibt jeder Idee eine Adresse – und macht Verknüpfung sichtbar.\n\n' +
+        'Idee A\n' + lines(a) + '\n\n' +
+        'Idee B\n' + lines(b) + '\n\n' +
+        '→ Diese Adressen können sofort zusammenfinden (lokal & föderiert).'
+      );
+    } catch(e) {
+      alert('Hinweis: Konnte das lokale Register nicht lesen.');
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(btn));
+})();
+</script>
+
+
   <header>  
     <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>  
     <div class="hero">  
