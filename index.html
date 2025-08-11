@@ -1,106 +1,53 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>GIAP · Churchen (MVP)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="GIAP connects ideas, not people. Give each idea an address at birth." />
-  <style>
-    :root{--w:900px}
-    *{box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
-    header{padding:0;background:#fff;border-bottom:1px solid #eee}
-    h1{margin:0 0 6px;font-size:28px}
-    h2{margin:0 0 10px}
-    main{max-width:var(--w);margin:0 auto;padding:18px}
-    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
-    textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
-    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}
-    button.secondary{background:#fff;color:#111}
-    input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
-    code{background:#f2f2f2;border-radius:6px;padding:2px 6px}
-    .muted{color:#666;font-size:14px}
-    .grid{display:grid;grid-template-columns:1fr;gap:10px}
-    @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-    .table{width:100%;border-collapse:collapse}
-    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:top}
-    .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .compare div{background:#f9f9f9;border-radius:8px;padding:12px;border:1px solid #ddd}
-    .compare h3{margin:0 0 8px}
-    .hero{max-width:var(--w); margin:0 auto; padding:48px 16px 28px 16px; text-align:center;}
-    .hero h1{font-size:34px; line-height:1.15; margin:0 0 10px;}
-    .hero .lead{font-size:18px; color:#555; max-width:800px; margin:0 auto 18px;}
-    .cta{display:inline-block; background:#111; color:#fff; padding:12px 20px; border-radius:10px; text-decoration:none; font-weight:700; border:1px solid #111;}
-    .cta.secondary{background:#fff;color:#111}
-    .value{display:grid; grid-template-columns:1fr; gap:10px; margin:18px auto 6px; max-width:860px; padding:0 16px 22px;}
-    .value .pill{background:#f6f6f6; border:1px solid #eee; border-radius:999px; padding:10px 14px; font-size:14px;}
-    @media (min-width:800px){.hero h1{font-size:40px} .value{grid-template-columns:1fr 1fr 1fr}}
-    .note-bar{background:#0f172a; color:#fff; padding:10px 14px; text-align:center; font-size:14px;}
-    .pill-btn{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #111;background:#fff;color:#111;font-size:12px;cursor:pointer}
-    .pill-btn + .pill-btn{margin-left:6px}
-    .id-cell a{display:inline-block}
-  </style>
+<meta charset="UTF-8" />
+<title>GIAP · Churchen (MVP)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{--w:900px}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
+  header{padding:0;background:#fff;border-bottom:1px solid #eee}
+  main{max-width:var(--w);margin:0 auto;padding:18px}
+  h1{margin:0 0 6px;font-size:28px}
+  h2{margin:0 0 10px}
+  .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
+  .hero{max-width:var(--w);margin:0 auto;padding:36px 16px 22px 16px;text-align:center}
+  .hero h1{font-size:32px;margin:0 0 8px}
+  .lead{color:#555}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
+  input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
+  button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}
+  button.secondary{background:#fff;color:#111}
+  code{background:#f2f2f2;border-radius:6px;padding:2px 6px}
+  .muted{color:#666;font-size:14px}
+  .table{width:100%;border-collapse:collapse}
+  .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:top}
+  .pill-btn{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #111;background:#fff;color:#111;font-size:12px;cursor:pointer}
+  .pill-btn + .pill-btn{margin-left:6px}
+  /* Judge-Overlay */
+  #judge-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:grid;place-items:center;padding:16px}
+  #judge-card{background:#fff;border-radius:12px;max-width:820px;width:100%;padding:18px;box-shadow:0 12px 36px rgba(0,0,0,.25)}
+  /* Floating Judge Button */
+  #judge-btn{position:fixed;right:20px;bottom:20px;padding:10px 16px;background:#111;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+</style>
 </head>
 <body>
 
 <header>
-  <div class="note-bar">Private MVP · 100% client-side · Nothing leaves your browser</div>
+  <div style="background:#0f172a;color:#fff;padding:10px 14px;text-align:center;font-size:14px">
+    Private MVP · 100% client-side · Nothing leaves your browser
+  </div>
   <div class="hero">
     <h1>Every Idea. One Click. Global Reach.</h1>
-    <p class="lead">
-      GIAP (Global Idea Addressing Protocol) gives every idea a unique, permanent address at birth — no gatekeepers, no delay.
-      You think it, and it’s connected.
-    </p>
-    <div class="row" style="justify-content:center; margin-top:14px">
-      <a href="#demo" class="cta">Try it now</a>
-      <a href="#learn" class="cta secondary">How it works</a>
-    </div>
-    <div class="value">
-      <div class="pill">Address at birth (IdeaID)</div>
-      <div class="pill">Instant linkability &amp; discovery</div>
-      <div class="pill">Local-first · Privacy by design</div>
-    </div>
+    <p class="lead">GIAP gives every idea a unique, permanent address at birth — no gatekeepers, no delay. You think it, and it’s connected.</p>
   </div>
 </header>
 
 <main>
-  <section class="card" id="learn">
-    <h1>GIAP – Global Idea Addressing Protocol</h1>
-    <p><strong>The moment you have an idea, GIAP asks if you want to give it an address on the net – and see matching ideas.</strong>
-    The net connects people; <strong>GIAP connects only ideas</strong>.</p>
-
-    <h2>What is GIAP?</h2>
-    <ul>
-      <li>Assigns a unique, permanent address to each idea at the moment of its creation.</li>
-      <li>Instantly connects it to matching ideas worldwide – independent of person, status, or location.</li>
-      <li>Gives control of visibility and access rights to the originator.</li>
-    </ul>
-
-    <h2>Example</h2>
-    <div class="compare">
-      <div>
-        <h3>Without GIAP</h3>
-        <p>A student in Nairobi imagines a new water filter. Years of chance connections, networking, and luck are needed before it reaches the right people.</p>
-      </div>
-      <div>
-        <h3>With GIAP</h3>
-        <p>Within seconds, the idea is connected to engineers in Seattle, patent counsel in Zurich, and sponsors in Singapore – no matter who the originator is.</p>
-      </div>
-    </div>
-
-    <h2>What is Churchen?</h2>
-    <p><strong>Churchen</strong> is the act of connection – the moment an idea becomes an address in the idea network.
-    The originator only has to think; GIAP does the rest.</p>
-
-    <h2>Feedback (Resonance Test)</h2>
-    <ul>
-      <li>Would you use such a system?</li>
-      <li>What would stop you from connecting your ideas this way?</li>
-    </ul>
-  </section>
-
   <section class="card" id="demo">
     <h2>1) Capture Idea → Assign Address</h2>
     <textarea id="idea" placeholder="Write your idea here…"></textarea>
@@ -108,20 +55,14 @@
       <button id="btn-churchen">Assign Address (churchen)</button>
       <button id="btn-clear" class="secondary">Clear</button>
     </div>
-    <p class="muted">Note: Everything runs locally in your browser. No content is sent to any server – stored only in your LocalStorage.</p>
+    <p class="muted">Everything runs locally in your browser. Stored only in your LocalStorage.</p>
   </section>
 
   <section class="card" id="result" style="display:none">
     <h2>Address</h2>
-    <div class="grid">
-      <div>
-        <label>IdeaID</label>
-        <input id="ideaId" type="text" readonly class="mono" />
-      </div>
-      <div>
-        <label>Content Hash (SHA-256)</label>
-        <input id="hash" type="text" readonly class="mono" />
-      </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label>IdeaID</label><input id="ideaId" type="text" readonly /></div>
+      <div><label>Content Hash (SHA-256)</label><input id="hash" type="text" readonly /></div>
     </div>
     <div class="row" style="margin-top:10px">
       <button id="btn-copy" class="secondary">Copy IdeaID</button>
@@ -148,154 +89,35 @@
   <section class="card">
     <h2>3) (Optional) Tags</h2>
     <p class="muted">For later relevance matching – stored locally with the idea.</p>
-    <input id="tags" type="text" placeholder="e.g. linked-data, protocol, DID" />
+    <input id="tags" type="text" placeholder="e.g. water, solar, protocol" />
   </section>
 </main>
 
-<!-- Floating: Judge This Idea (Overlay & Auto-Seeding) -->
-<script>
-(function () {
-  'use strict';
-  const STORAGE_KEY = 'giap_registry_v1';
+<button id="judge-btn">Judge This Idea</button>
 
-  function readReg(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
-  function writeReg(v){ localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); }
-  function ensureMin2(){
-    let r = readReg();
-    if (r.length >= 2) return r;
-    const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
-    const seed = [
-      { id:`giap:${today}-seedA`, title:'Student in Nairobi: water filter', tags:['water','innovation','sustainability'], date: Date.now() },
-      { id:`giap:${today}-seedB`, title:'Solar saline plantage', tags:['solar','desalination','sustainability'], date: Date.now() }
-    ];
-    if (r.length === 0) r = seed;
-    if (r.length === 1) r.push(seed[1]);
-    writeReg(r);
-    return r;
-  }
-  function jaccard(a=[], b=[]){
-    const A=new Set(a.map(x=>String(x).toLowerCase()));
-    const B=new Set(b.map(x=>String(x).toLowerCase()));
-    const inter=[...A].filter(x=>B.has(x)).length;
-    const uni=new Set([...A,...B]).size||1;
-    return inter/uni;
-  }
-  function showOverlay(a,b,score){
-    const old = document.getElementById('judge-overlay'); if (old) old.remove();
-    const o=document.createElement('div'); o.id='judge-overlay';
-    Object.assign(o.style,{position:'fixed',inset:'0',background:'rgba(0,0,0,.45)',zIndex:'10000',display:'grid',placeItems:'center',padding:'16px'});
-    const card=document.createElement('div');
-    Object.assign(card.style,{background:'#fff',borderRadius:'12px',maxWidth:'820px',width:'100%',padding:'18px',boxShadow:'0 12px 36px rgba(0,0,0,.25)'});
-    card.innerHTML=`
-      <h3 style="margin:0 0 10px">How GIAP links ideas</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
-          <div style="font-weight:700">Idea A</div>
-          <div><small>${a.id||''}</small></div>
-          <div style="margin-top:6px">${a.title||'(no title)'}</div>
-          <div style="color:#555;margin-top:6px"><small>Tags: ${(a.tags||[]).join(', ')||'—'}</small></div>
-        </div>
-        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
-          <div style="font-weight:700">Idea B</div>
-          <div><small>${b.id||''}</small></div>
-          <div style="margin-top:6px">${b.title||'(no title)'}</div>
-          <div style="color:#555;margin-top:6px"><small>Tags: ${(b.tags||[]).join(', ')||'—'}</small></div>
-        </div>
-      </div>
-      <div style="margin:12px 0 6px">Similarity (tags): <b>${(score*100).toFixed(0)}%</b></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-        <button id="judge-close" class="secondary" style="background:#fff;color:#111;border:1px solid #111;border-radius:10px;padding:8px 12px;cursor:pointer">Close</button>
-      </div>`;
-    o.appendChild(card); document.body.appendChild(o);
-    document.getElementById('judge-close').onclick=()=>o.remove();
-  }
-  function mountJudge(){
-    const btn = document.createElement('button');
-    btn.textContent = 'Judge This Idea';
-    Object.assign(btn.style,{position:'fixed',bottom:'20px',right:'20px',padding:'10px 16px',background:'#111',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer',zIndex:'9999',fontSize:'14px',boxShadow:'0 4px 12px rgba(0,0,0,.2)'});
-    btn.addEventListener('click', () => {
-      const reg = ensureMin2();
-      const i = Math.floor(Math.random()*reg.length);
-      let j = Math.floor(Math.random()*reg.length);
-      if (reg.length>1) while (j===i) j = Math.floor(Math.random()*reg.length);
-      const A = reg[i], B = reg[j];
-      showOverlay(A,B, jaccard(A.tags||[], B.tags||[]));
-    });
-    document.body.appendChild(btn);
-  }
-  if (document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', mountJudge); } else { mountJudge(); }
-})();
-</script>
-
-<!-- Klickbare GIAP-IDs + Kopieren/Teilen + optionaler Protocol-Handler -->
-<script>
-(function () {
-  'use strict';
-  if ('registerProtocolHandler' in navigator) {
-    try {
-      navigator.registerProtocolHandler('web+giap', location.origin + location.pathname + '?id=%s', 'GIAP Handler');
-    } catch(_) {}
-  }
-  function permalinkFor(id){ const u = new URL(location.href); u.searchParams.set('id', id); return u.pathname + '?' + u.searchParams.toString(); }
-  async function copy(text){ try{ await navigator.clipboard.writeText(text); alert('Adresse kopiert:\n' + text); }catch{ alert('Konnte nicht kopieren.'); } }
-  function enhanceIdeaIds(root){
-    const rx = /(giap:[^\s,;<>"]+|giap:\/\/[^\s,;<>"]+)/ig;
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-    const nodes = [];
-    while (walker.nextNode()) { const n = walker.currentNode; if (rx.test(n.nodeValue)) nodes.push(n); rx.lastIndex = 0; }
-    nodes.forEach(n=>{
-      const frag=document.createDocumentFragment(); const parts=n.nodeValue.split(rx);
-      for (let i=0;i<parts.length;i++){
-        const chunk = parts[i]; if(!chunk) continue;
-        if (/^giap:|^giap:\/\//i.test(chunk)){
-          const id = chunk;
-          const a=document.createElement('a'); a.href=permalinkFor(id); a.textContent=id; a.style.textDecoration='underline'; a.style.cursor='pointer'; a.title='Open permalink';
-          const copyBtn=document.createElement('button'); copyBtn.textContent='kopieren'; copyBtn.className='pill-btn'; copyBtn.onclick=(e)=>{e.preventDefault(); copy(id);};
-          const shareBtn=document.createElement('button'); shareBtn.textContent='teilen'; shareBtn.className='pill-btn'; shareBtn.onclick=async(e)=>{e.preventDefault(); const url=location.origin+permalinkFor(id); if(navigator.share){try{await navigator.share({title:'GIAP Idea',text:id,url});}catch{}} else {copy(url);} };
-          const wrap=document.createElement('span'); wrap.className='id-cell'; wrap.appendChild(a); const gap=document.createTextNode(' '); wrap.appendChild(gap); wrap.appendChild(copyBtn); wrap.appendChild(document.createTextNode(' ')); wrap.appendChild(shareBtn);
-          frag.appendChild(wrap);
-        } else { frag.appendChild(document.createTextNode(chunk)); }
-      }
-      n.parentNode.replaceChild(frag, n);
-    });
-  }
-  function apply(){ enhanceIdeaIds(document.body); const mo=new MutationObserver(muts=>muts.forEach(m=>enhanceIdeaIds(m.target))); mo.observe(document.body,{subtree:true,childList:true,characterData:true}); }
-  if (document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', apply);} else { apply(); }
-})();
-</script>
-
-<!-- App-Logik: Hashing, Speichern, Rendern, Import/Export -->
 <script>
 (function(){
   'use strict';
-  const STORAGE_KEY = 'giap_registry_v1';
-  const $ = (sel)=>document.querySelector(sel);
-  const $$ = (sel)=>document.querySelectorAll(sel);
 
-  // UI-Refs
-  const taIdea = $('#idea');
-  const inpTags = $('#tags');
-  const btnChurch = $('#btn-churchen');
-  const btnClear = $('#btn-clear');
-  const secResult = $('#result');
-  const outId = $('#ideaId');
-  const outHash = $('#hash');
-  const btnCopyId = $('#btn-copy');
-  const btnCopyUrl = $('#btn-copy-url');
-  const tblBody = $('#tbl tbody');
-  const btnExport = $('#btn-export');
-  const inpImport = $('#file-import');
+  const STORAGE_KEY = 'giap_registry_v1';
+  const $ = sel => document.querySelector(sel);
+  const taIdea = $('#idea'), inpTags = $('#tags');
+  const btnChurch = $('#btn-churchen'), btnClear = $('#btn-clear');
+  const secResult = $('#result'), outId = $('#ideaId'), outHash = $('#hash');
+  const btnCopyId = $('#btn-copy'), btnCopyUrl = $('#btn-copy-url');
+  const tblBody = document.querySelector('#tbl tbody');
+  const btnExport = $('#btn-export'), inpImport = $('#file-import');
+  const btnJudge = $('#judge-btn');
 
   // Helpers
   const todayStr = ()=>new Date().toISOString().slice(0,10).replace(/-/g,'');
-  function readReg(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); } catch { return []; } }
-  function writeReg(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
   function parseTags(s){ return (s||'').split(',').map(t=>t.trim()).filter(Boolean); }
+  function readReg(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
+  function writeReg(v){ localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); }
   async function sha256Hex(str){
     const enc = new TextEncoder().encode(str);
     const buf = await crypto.subtle.digest('SHA-256', enc);
-    const arr = Array.from(new Uint8Array(buf));
-    return arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
   function ideaIdFrom(hashPrefix){ return `giap:${todayStr()}-${hashPrefix}`; }
 
@@ -307,29 +129,27 @@
       const tr = document.createElement('tr');
 
       const tdId = document.createElement('td');
-      tdId.textContent = it.id; // wird vom Enhancer in Link + Buttons verwandelt
+      // Link + Kopieren/Teilen
+      const a = document.createElement('a'); a.href = '?id='+encodeURIComponent(it.id); a.textContent = it.id;
+      const bCopy = document.createElement('button'); bCopy.textContent='kopieren'; bCopy.className='pill-btn';
+      bCopy.onclick = async (e)=>{e.preventDefault(); try{ await navigator.clipboard.writeText(it.id);}catch{} };
+      const bShare = document.createElement('button'); bShare.textContent='teilen'; bShare.className='pill-btn';
+      bShare.onclick = async (e)=>{ e.preventDefault(); const url = location.origin+location.pathname+'?id='+encodeURIComponent(it.id);
+        if(navigator.share){ try{ await navigator.share({title:'GIAP Idea', text:it.id, url}); }catch{} } else {
+          try{ await navigator.clipboard.writeText(url);}catch{} }
+      };
+      tdId.appendChild(a); tdId.appendChild(document.createTextNode(' ')); tdId.appendChild(bCopy); tdId.appendChild(document.createTextNode(' ')); tdId.appendChild(bShare);
       tr.appendChild(tdId);
 
-      const tdPrev = document.createElement('td');
-      tdPrev.textContent = it.title || '(no title)';
-      tr.appendChild(tdPrev);
-
-      const tdDate = document.createElement('td');
-      const d = new Date(it.date||Date.now());
-      tdDate.textContent = d.toLocaleString();
-      tr.appendChild(tdDate);
+      const tdPrev = document.createElement('td'); tdPrev.textContent = it.title || '(no title)'; tr.appendChild(tdPrev);
+      const tdDate = document.createElement('td'); tdDate.textContent = new Date(it.date||Date.now()).toLocaleString(); tr.appendChild(tdDate);
 
       const tdAct = document.createElement('td');
-      const bCopy = document.createElement('button'); bCopy.textContent='kopieren'; bCopy.className='pill-btn';
-      bCopy.onclick = async ()=>{ try{ await navigator.clipboard.writeText(it.id); alert('Adresse kopiert:\n'+it.id);}catch{} };
       const bLoad = document.createElement('button'); bLoad.textContent='laden'; bLoad.className='pill-btn';
-      bLoad.onclick = ()=>{ taIdea.value = it.title||''; inpTags.value = (it.tags||[]).join(', '); window.scrollTo({top:0, behavior:'smooth'}); };
+      bLoad.onclick = ()=>{ taIdea.value=it.title||''; inpTags.value=(it.tags||[]).join(', '); window.scrollTo({top:0,behavior:'smooth'}); };
       const bDel = document.createElement('button'); bDel.textContent='löschen'; bDel.className='pill-btn';
       bDel.onclick = ()=>{ const cur = readReg().filter(x=>x.id!==it.id); writeReg(cur); render(); };
-
-      tdAct.appendChild(bCopy); tdAct.appendChild(document.createTextNode(' '));
-      tdAct.appendChild(bLoad); tdAct.appendChild(document.createTextNode(' '));
-      tdAct.appendChild(bDel);
+      tdAct.appendChild(bLoad); tdAct.appendChild(document.createTextNode(' ')); tdAct.appendChild(bDel);
       tr.appendChild(tdAct);
 
       tblBody.appendChild(tr);
@@ -346,34 +166,27 @@
     const entry = { id, title, tags, hash, date: Date.now() };
 
     const reg = readReg();
-    // Duplikat vermeiden (gleiche ID)
     if (!reg.some(x=>x.id===id)) reg.push(entry);
     writeReg(reg);
 
-    outId.value = id;
-    outHash.value = hash;
-    secResult.style.display = '';
+    outId.value = id; outHash.value = hash; secResult.style.display = '';
     render();
   });
 
-  btnClear.addEventListener('click', ()=>{
-    taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value='';
-  });
+  btnClear.addEventListener('click', ()=>{ taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value=''; });
 
   // Copy buttons
-  btnCopyId.addEventListener('click', async ()=>{
-    try{ await navigator.clipboard.writeText(outId.value||''); alert('IdeaID kopiert.'); }catch{}
-  });
+  btnCopyId.addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(outId.value||''); }catch{} });
   btnCopyUrl.addEventListener('click', async ()=>{
     const url = location.origin + location.pathname + '?id=' + encodeURIComponent(outId.value||'');
-    try{ await navigator.clipboard.writeText(url); alert('Permalink kopiert.'); }catch{}
+    try{ await navigator.clipboard.writeText(url); }catch{}
   });
 
   // Export / Import
   btnExport.addEventListener('click', ()=>{
     const blob = new Blob([JSON.stringify(readReg(), null, 2)], {type:'application/json'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'giap_registry.json'; a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
   });
   inpImport.addEventListener('change', (e)=>{
     const file = e.target.files && e.target.files[0]; if(!file) return;
@@ -386,39 +199,77 @@
         for (const it of (Array.isArray(data)?data:[])){ if (it && it.id && !map.has(it.id)) map.set(it.id, it); }
         writeReg(Array.from(map.values()));
         render();
-        alert('Import erfolgreich.');
-      }catch{ alert('Import fehlgeschlagen.'); }
+        alert('Import OK');
+      }catch{ alert('Import failed'); }
     };
     fr.readAsText(file);
   });
 
-  // Smooth scroll for hash links
-  document.addEventListener('click', (e)=>{
-    const a = e.target.closest('a[href^="#"]'); if(!a) return;
-    const id = a.getAttribute('href').slice(1); const el = document.getElementById(id);
-    if (el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  // Deep link ?id=
+  (function handleDeepLink(){
+    const id = new URLSearchParams(location.search).get('id'); if(!id) return;
+    const reg = readReg(); const found = reg.find(x=>x.id===id);
+    outId.value = id; outHash.value = found? (found.hash||'') : ''; secResult.style.display = '';
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  })();
+
+  // Judge
+  function jaccard(a=[], b=[]){
+    const A=new Set(a.map(x=>String(x).toLowerCase()));
+    const B=new Set(b.map(x=>String(x).toLowerCase()));
+    const inter=[...A].filter(x=>B.has(x)).length;
+    const uni=new Set([...A,...B]).size||1;
+    return inter/uni;
+  }
+  function ensureMin2(){
+    let r = readReg();
+    if (r.length >= 2) return r;
+    const t = todayStr();
+    const seed = [
+      { id:`giap:${t}-seedA`, title:'Student in Nairobi: water filter', tags:['water','innovation','sustainability'], date: Date.now() },
+      { id:`giap:${t}-seedB`, title:'Solar saline plantage', tags:['solar','desalination','sustainability'], date: Date.now() }
+    ];
+    if (r.length === 0) r = seed; else if (r.length === 1) r.push(seed[1]);
+    writeReg(r); return r;
+  }
+  function showOverlay(a,b,score){
+    const old = document.getElementById('judge-overlay'); if(old) old.remove();
+    const o = document.createElement('div'); o.id='judge-overlay';
+    const c = document.createElement('div'); c.id='judge-card';
+    c.innerHTML = `
+      <h3 style="margin:0 0 10px">How GIAP links ideas</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
+          <div style="font-weight:700">Idea A</div>
+          <div><small>${a.id}</small></div>
+          <div style="margin-top:6px">${a.title||'(no title)'}</div>
+          <div style="color:#555;margin-top:6px"><small>Tags: ${(a.tags||[]).join(', ')||'—'}</small></div>
+        </div>
+        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
+          <div style="font-weight:700">Idea B</div>
+          <div><small>${b.id}</small></div>
+          <div style="margin-top:6px">${b.title||'(no title)'}</div>
+          <div style="color:#555;margin-top:6px"><small>Tags: ${(b.tags||[]).join(', ')||'—'}</small></div>
+        </div>
+      </div>
+      <div style="margin:12px 0 6px">Similarity (tags): <b>${(score*100).toFixed(0)}%</b></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button id="judge-close" class="secondary">Close</button>
+      </div>`;
+    o.appendChild(c); document.body.appendChild(o);
+    $('#judge-close').onclick=()=>o.remove();
+  }
+  btnJudge.addEventListener('click', ()=>{
+    const reg = ensureMin2();
+    const i = Math.floor(Math.random()*reg.length);
+    let j = Math.floor(Math.random()*reg.length); if (reg.length>1) while (j===i) j = Math.floor(Math.random()*reg.length);
+    const A = reg[i], B = reg[j];
+    showOverlay(A,B, jaccard(A.tags||[], B.tags||[]));
   });
 
-  // Deep link: ?id=...
-  function handleDeepLink(){
-    const q = new URLSearchParams(location.search); const id = q.get('id'); if(!id) return;
-    // Falls vorhanden, fülle Result-Feld, ansonsten nur anzeigen
-    const reg = readReg(); const found = reg.find(x=>x.id===id);
-    outId.value = id; outHash.value = found? (found.hash||'') : '';
-    secResult.style.display = '';
-    // Scrollen zum Result-Block
-    document.getElementById('result').scrollIntoView({behavior:'smooth'});
-  }
-
-  // Initial
-  if (document.readyState==='loading') {
-    document.addEventListener('DOMContentLoaded', ()=>{ render(); handleDeepLink(); });
-  } else {
-    render(); handleDeepLink();
-  }
+  // Initial render
+  render();
 })();
 </script>
-
 </body>
 </html>
-
