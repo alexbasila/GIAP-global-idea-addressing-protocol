@@ -171,7 +171,7 @@ const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
 
     const reg = readReg();
     if (!reg.some(x=>x.id===id)) reg.push(entry);
-    writeReg(reg);
+writeReg(cap(reg, MAX_ENTRIES));
 
     outId.value = id; outHash.value = hash; secResult.style.display = '';
     render();
