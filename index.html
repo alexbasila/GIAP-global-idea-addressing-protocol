@@ -101,6 +101,9 @@
   'use strict';
 
   const STORAGE_KEY = 'giap_registry_v1';
+  const MAX_ENTRIES = 1000;
+// behält die jüngsten n Einträge (älteste fallen raus)
+const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
   const $ = sel => document.querySelector(sel);
   const taIdea = $('#idea'), inpTags = $('#tags');
   const btnChurch = $('#btn-churchen'), btnClear = $('#btn-clear');
