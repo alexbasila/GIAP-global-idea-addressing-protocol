@@ -43,7 +43,7 @@
     b = document.createElement('button');
     b.id = 'giap-fab';
     b.type = 'button';
-    b.textContent = 'Churchen';
+    b.textContent = 'Churchen●';
     Object.assign(b.style, {
       position:'fixed', top:'12px', right:'12px', zIndex:2147483647,
       padding:'10px 14px', borderRadius:'12px', border:'1px solid #111',
