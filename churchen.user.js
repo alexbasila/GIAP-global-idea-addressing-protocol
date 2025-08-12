@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GIAP Churchen (mobil-stabil, ohne Popup)
 // @namespace    giap
-// @version      0.5
+// @version      0.6
 // @description  Weißer "Churchen"-Button (oben rechts). Holt Text (Auswahl/Textarea/Editor) und öffnet GIAP im selben Tab.
 // @match        https://chatgpt.com/*
 // @match        https://www.chatgpt.com/*
