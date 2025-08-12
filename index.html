@@ -276,48 +276,25 @@ writeReg(cap(reg, MAX_ENTRIES));
 })();
 </script>
   <script>
-/* Autofill aus ?idea=... (&tags=... optional) und auto-churchen */
+/* Autofill aus ?idea=... (&tags=... optional) + Auto-Churchen bei ?auto=1 */
 (function () {
   const sp = new URLSearchParams(location.search);
-  const idea = sp.get('idea');
+  const idea = (sp.get('idea') || '').trim();
   if (!idea) return;
 
   const ideaEl = document.getElementById('idea');
   const tagsEl = document.getElementById('tags');
-  const btn = document.getElementById('btn-churchen');
+  const btn    = document.getElementById('btn-churchen');
 
-  // URLSearchParams ist bereits decodiert; '+'-Fallback nur zur Sicherheit
   ideaEl.value = idea.replace(/\+/g, ' ');
-
-  const tags = sp.get('tags');
+  const tags = (sp.get('tags') || '').trim();
   if (tags) tagsEl.value = tags;
 
-  // Automatisch „Assign Address“ auslösen, wenn ?auto=1
-  if ((sp.get('auto') || '') === '1') {
-    // kurz warten bis alles gemountet ist
+  if (sp.get('auto') === '1') {
     setTimeout(() => btn.click(), 50);
   }
-// --- AutoSave: Wenn ?auto=1 & ?idea=... gesetzt sind, automatisch "churchen" ---
-(function autoSaveFromURL() {
-  const p = new URLSearchParams(location.search);
-  if (p.get('auto') !== '1') return;
-
-  const idea = (p.get('idea') || '').trim();
-  if (!idea) return;
-
-  // optional: ?tags=a,b,c
-  const tags = (p.get('tags') || '').trim();
-
-  // ins Formular schreiben
-  taIdea.value = idea;
-  inpTags.value = tags;
-
-  // kurzen Tick warten, dann speichern
-  setTimeout(() => btnChurch.click(), 50);
-})();
 })();
 </script>
-<script>
 /* GIAP ←→ ChatGPT Bridge: postMessage-Empfang und Antwort */
 (function () {
   const ORIGIN_WHITELIST = ['https://chat.openai.com', 'https://chatgpt.com']; // ggf. erweitern
