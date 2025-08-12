@@ -47,7 +47,7 @@
     Object.assign(b.style, {
       position:'fixed', top:'12px', right:'12px', zIndex:2147483647,
       padding:'10px 14px', borderRadius:'12px', border:'1px solid #111',
-      background:'#fff', color:'#111', fontWeight:'700', fontSize:'14px',
+      background:'#0ea5e9', color:'#fff',fontWeight:'700', fontSize:'14px',
       lineHeight:'1', cursor:'pointer', boxShadow:'0 8px 20px rgba(0,0,0,.28)',
       pointerEvents:'auto', touchAction:'manipulation'
     });
