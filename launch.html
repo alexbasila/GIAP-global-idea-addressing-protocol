@@ -1,64 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GIAP Churchen · Install/Update</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GIAP · Churchen Starter</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #fafafa;
-      color: #111;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+    :root{
+      --bg:#0b1220; --card:#0f172a; --txt:#e6eaf2; --muted:#99a3b3;
+      --accent:#22c55e; --accent-2:#38bdf8; --w:880px;
     }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 16px;
-    }
-    a.install-btn {
-      display: inline-block;
-      padding: 14px 20px;
-      border-radius: 8px;
-      background: #00c853;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      transition: background 0.3s ease;
-    }
-    a.install-btn:hover {
-      background: #00b34a;
-    }
-    p {
-      font-size: 14px;
-      color: #555;
-      max-width: 400px;
-      text-align: center;
-      margin-top: 12px;
-      line-height: 1.4;
-    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+         background:var(--bg); color:var(--txt)}
+    .wrap{max-width:var(--w); margin:0 auto; padding:28px 16px 48px}
+    .hero{padding:22px 18px 12px}
+    h1{margin:0 0 8px; font-size:28px; letter-spacing:.2px}
+    p.lead{margin:0; color:var(--muted)}
+    .grid{display:grid; gap:14px; margin-top:22px}
+    .card{background:var(--card); border:1px solid #19233a; border-radius:14px; padding:16px}
+    .card h2{margin:0 0 8px; font-size:18px}
+    .row{display:flex; flex-wrap:wrap; gap:10px; margin-top:8px}
+    a.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+          padding:13px 16px; border-radius:10px; text-decoration:none; font-weight:700}
+    .primary{background:var(--accent); color:#05280f}
+    .secondary{background:#111827; color:var(--txt); border:1px solid #243047}
+    .note{color:var(--muted); font-size:14px; margin-top:8px}
+    .link{color:var(--accent-2); text-decoration:none}
+    @media (min-width:720px){ .grid{grid-template-columns:1fr 1fr} }
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>GIAP · Churchen Starter</h1>
+      <p class="lead">2 Schritte: 1) Skript installieren/aktualisieren → 2) ChatGPT öffnen (der Churchen-Button erscheint oben rechts).</p>
+    </div>
 
-  <h1>GIAP Churchen installieren/aktualisieren</h1>
+    <div class="grid">
+      <section class="card">
+        <h2>Schritt 1 · Install / Update</h2>
+        <div class="row">
+          <a class="btn primary" target="_blank" rel="noopener"
+             href="https://raw.githubusercontent.com/alexbasila/GIAP-global-idea-addressing-protocol/main/churchen.user.js">
+            Install / Update Churchen
+          </a>
+        </div>
+        <div class="note">
+          Öffnet den Tampermonkey-Dialog. Falls Tampermonkey fehlt: 
+          <a class="link" href="https://www.tampermonkey.net/" target="_blank" rel="noopener">hier installieren</a>.
+        </div>
+      </section>
 
-  <a class="install-btn"
-     href="https://raw.githubusercontent.com/alexbasila/GIAP-global-idea-addressing-protocol/main/churchen.user.js"
-     target="_blank" rel="noopener">
-    Install / Update Churchen
-  </a>
-
-  <p>Klicke auf den grünen Button, um das Tampermonkey-Skript zu installieren oder zu aktualisieren.<br>
-  Falls Tampermonkey nicht installiert ist, bitte zuerst <a href="https://www.tampermonkey.net/" target="_blank">Tampermonkey</a> installieren.</p>
-
+      <section class="card">
+        <h2>Schritt 2 · ChatGPT öffnen</h2>
+        <div class="row">
+          <a class="btn secondary" target="_blank" rel="noopener" href="https://chatgpt.com/">
+            ChatGPT öffnen (chatgpt.com)
+          </a>
+          <a class="btn secondary" target="_blank" rel="noopener" href="https://chat.openai.com/">
+            Fallback (chat.openai.com)
+          </a>
+        </div>
+        <div class="note">Nach dem Öffnen kurz warten – der <b>Churchen</b>-Button wird automatisch eingeblendet.</div>
+      </section>
+    </div>
+  </div>
 </body>
 </html>
