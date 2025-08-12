@@ -1,73 +1,44 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GIAP · Churchen Starter</title>
-  <style>
-    :root { --bg:#0b1220; --card:#0f172a; --fg:#e5e7eb; --muted:#96a0b5; --accent:#22c55e; --accent2:#3b82f6; }
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif}
-    .wrap{max-width:880px;margin:0 auto;padding:24px 16px 40px}
-    h1{margin:6px 0 12px;font-size:28px}
-    p.lead{margin:0 0 18px;color:var(--muted)}
-    .card{background:var(--card);border:1px solid #1f2937;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 8px 28px rgba(0,0,0,.25)}
-    .row{display:flex;flex-wrap:wrap;gap:12px}
-    .btn{display:inline-block;padding:14px 18px;border-radius:12px;border:1px solid transparent;font-weight:700;text-decoration:none;text-align:center;cursor:pointer}
-    .btn.green{background:var(--accent);color:#06280f}
-    .btn.blue{background:var(--accent2);color:#041423}
-    .btn.ghost{background:transparent;border-color:#334155;color:var(--fg)}
-    small{color:var(--muted)}
-    .steps h2{margin:0 0 10px}
-    .note{margin-top:10px;color:var(--muted)}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GIAP · Churchen installieren</title>
+<style>
+  :root{--fg:#0f172a;--bg:#f8fafc;--card:#ffffff;--ok:#10b981;--muted:#64748b}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:20px}
+  h1{font-size:28px;margin:10px 0 6px} p{color:var(--muted);margin:0 0 18px}
+  .card{background:var(--card);border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+  .btn{display:block;width:100%;text-align:center;padding:14px 16px;border-radius:12px;border:0;font-weight:700;cursor:pointer}
+  .btn-primary{background:var(--ok);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid #e5e7eb;color:var(--fg)}
+  small{color:var(--muted)}
+</style>
 </head>
 <body>
   <div class="wrap">
     <h1>GIAP · Churchen Starter</h1>
-    <p class="lead">Ein Klick zum Churchen-Button in ChatGPT. Erst installieren/aktualisieren, dann ChatGPT öffnen.</p>
+    <p>2 kurze Klicks: Tampermonkey → Churchen-Script. Danach ChatGPT öffnen – der <b>Churchen</b>-Button ist oben rechts.</p>
 
-    <div class="card steps">
-      <h2>Schritt 1 · Install/Update</h2>
-      <div class="row">
-        <a class="btn green" id="btn-install"
-           href="https://raw.githubusercontent.com/alexbasila/GIAP-global-idea-addressing-protocol/main/churchen.user.js">
-          Install / Update Churchen
-        </a>
-        <a class="btn ghost" target="_blank" rel="noopener"
-           href="https://www.tampermonkey.net/">
-          Tampermonkey installieren (falls nötig)
-        </a>
-      </div>
-      <div class="note"><small>Der grüne Button öffnet den Tampermonkey-Dialog. Bestätigen → fertig.</small></div>
-    </div>
-
-    <div class="card steps">
-      <h2>Schritt 2 · ChatGPT öffnen</h2>
-      <div class="row">
-        <a class="btn blue" id="btn-chatgpt" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT öffnen</a>
-        <a class="btn ghost" href="https://chat.openai.com/" target="_blank" rel="noopener">Fallback (chat.openai.com)</a>
-      </div>
-      <div class="note"><small>Nach dem Öffnen kurz warten – der <b>Churchen</b>-Button erscheint oben rechts.</small></div>
+    <div class="card">
+      <h2>Schritt 1 · Tampermonkey installieren</h2>
+      <p><small>Falls schon installiert, einfach zu Schritt 2 springen.</small></p>
+      <a class="btn btn-ghost" href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/" target="_blank" rel="noopener">Tampermonkey für Firefox öffnen</a>
+      <a class="btn btn-ghost" href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" target="_blank" rel="noopener">Tampermonkey für Chrome öffnen</a>
     </div>
 
     <div class="card">
-      <h2>Schnellstart (optional)</h2>
-      <p class="lead">Öffnet zuerst den Install/Update-Dialog, danach ChatGPT (kann durch Popup-Blocker verhindert werden).</p>
-      <a class="btn green" id="btn-start" href="#">Start jetzt</a>
-      <div class="note"><small>Falls ChatGPT nicht automatisch öffnet: Schritt 2 manuell anklicken.</small></div>
+      <h2>Schritt 2 · Churchen installieren/aktualisieren</h2>
+      <a class="btn btn-primary" href="https://raw.githubusercontent.com/alexbasila/GIAP-global-idea-addressing-protocol/main/churchen.user.js">Install / Update Churchen</a>
+      <p><small>Es öffnet sich der Tampermonkey-Dialog → <b>Installieren</b> bzw. <b>Update</b> bestätigen.</small></p>
+    </div>
+
+    <div class="card">
+      <h2>Schritt 3 · ChatGPT öffnen</h2>
+      <a class="btn btn-ghost" href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT öffnen</a>
+      <p><small>Seite kurz laden lassen. Der weiße <b>Churchen</b>-Button erscheint oben rechts.</small></p>
     </div>
   </div>
-
-  <script>
-    // „Start jetzt“: erst Raw-Userscript, dann (nach kleiner Wartezeit) ChatGPT
-    document.getElementById('btn-start').addEventListener('click', (e)=>{
-      e.preventDefault();
-      const raw = "https://raw.githubusercontent.com/alexbasila/GIAP-global-idea-addressing-protocol/main/churchen.user.js";
-      // im selben Tab öffnen, damit der TM-Dialog sicher kommt
-      window.location.href = raw;
-      // Tipp für den Nutzer in der History: nach „Zurück“ noch ChatGPT öffnen
-      setTimeout(()=>{ window.open("https://chatgpt.com/", "_blank"); }, 1500);
-    });
-  </script>
 </body>
 </html>
