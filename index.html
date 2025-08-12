@@ -294,6 +294,24 @@
     // kurz warten bis alles gemountet ist
     setTimeout(() => btn.click(), 50);
   }
+// --- AutoSave: Wenn ?auto=1 & ?idea=... gesetzt sind, automatisch "churchen" ---
+(function autoSaveFromURL() {
+  const p = new URLSearchParams(location.search);
+  if (p.get('auto') !== '1') return;
+
+  const idea = (p.get('idea') || '').trim();
+  if (!idea) return;
+
+  // optional: ?tags=a,b,c
+  const tags = (p.get('tags') || '').trim();
+
+  // ins Formular schreiben
+  taIdea.value = idea;
+  inpTags.value = tags;
+
+  // kurzen Tick warten, dann speichern
+  setTimeout(() => btnChurch.click(), 50);
+})();
 })();
 </script>
 </body>
