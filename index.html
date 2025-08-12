@@ -272,5 +272,29 @@
   render();
 })();
 </script>
+  <script>
+/* Autofill aus ?idea=... (&tags=... optional) und auto-churchen */
+(function () {
+  const sp = new URLSearchParams(location.search);
+  const idea = sp.get('idea');
+  if (!idea) return;
+
+  const ideaEl = document.getElementById('idea');
+  const tagsEl = document.getElementById('tags');
+  const btn = document.getElementById('btn-churchen');
+
+  // URLSearchParams ist bereits decodiert; '+'-Fallback nur zur Sicherheit
+  ideaEl.value = idea.replace(/\+/g, ' ');
+
+  const tags = sp.get('tags');
+  if (tags) tagsEl.value = tags;
+
+  // Automatisch „Assign Address“ auslösen, wenn ?auto=1
+  if ((sp.get('auto') || '') === '1') {
+    // kurz warten bis alles gemountet ist
+    setTimeout(() => btn.click(), 50);
+  }
+})();
+</script>
 </body>
 </html>
