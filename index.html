@@ -317,5 +317,47 @@ writeReg(cap(reg, MAX_ENTRIES));
 })();
 })();
 </script>
+<script>
+/* GIAP ←→ ChatGPT Bridge: postMessage-Empfang und Antwort */
+(function () {
+  const ORIGIN_WHITELIST = ['https://chat.openai.com', 'https://chatgpt.com']; // ggf. erweitern
+
+  // Hilfsfunktionen – greift auf bestehende Elemente/Handler zu:
+  async function autoChurchen(idea, tagsCSV) {
+    const ideaEl = document.getElementById('idea');
+    const tagsEl = document.getElementById('tags');
+    const btn    = document.getElementById('btn-churchen');
+
+    if (!ideaEl || !btn) return { ok:false, error:'UI not ready' };
+
+    ideaEl.value = idea || '';
+    if (tagsEl && tagsCSV) tagsEl.value = tagsCSV;
+
+    // Klick simulieren (nutzt deine bestehende Logik → erzeugt ID & Registereintrag)
+    btn.click();
+
+    // kleine Wartezeit, bis Hash/ID geschrieben sind
+    await new Promise(r => setTimeout(r, 60));
+
+    const id   = (document.getElementById('ideaId')?.value)||'';
+    const hash = (document.getElementById('hash')?.value)||'';
+    return { ok:true, id, hash };
+  }
+
+  window.addEventListener('message', async (ev) => {
+    try {
+      if (!ORIGIN_WHITELIST.includes(ev.origin)) return;  // Sicherheit
+      const msg = ev.data || {};
+      if (msg.type !== 'GIAP_CHURCHEN') return;
+
+      const res = await autoChurchen(String(msg.idea||''), String(msg.tags||''));
+      ev.source?.postMessage({ type:'GIAP_RESULT', correlate: msg.correlate, ...res }, ev.origin);
+    } catch (e) {
+      ev.source?.postMessage({ type:'GIAP_RESULT', ok:false, error:String(e) }, ev.origin);
+    }
+  }, false);
+})();
+</script>
+  
 </body>
 </html>
