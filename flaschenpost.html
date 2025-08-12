@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flaschenpost · GIAP Skeleton</title>
+<meta name="description" content="Flaschenpost (GIAP): From idea to address. Local-first skeleton." />
+<style>
+  :root { --w: 920px; --c:#111; --bg:#fafafa; --muted:#666; --b:#eee; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--c)}
+  header{background:#fff;border-bottom:1px solid var(--b)}
+  .wrap{max-width:var(--w);margin:0 auto;padding:16px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand h1{font-size:20px;margin:0}
+  nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  nav button{padding:8px 12px;border-radius:10px;border:1px solid var(--c);background:#fff;color:var(--c);font-weight:700;cursor:pointer}
+  nav button.active{background:var(--c);color:#fff}
+  main .card{background:#fff;border:1px solid var(--b);border-radius:12px;padding:14px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  textarea,input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
+  textarea{min-height:140px}
+  button.primary{padding:10px 14px;border-radius:10px;border:1px solid var(--c);background:var(--c);color:#fff;font-weight:700;cursor:pointer}
+  button.secondary{padding:10px 14px;border-radius:10px;border:1px solid var(--c);background:#fff;color:var(--c);font-weight:700;cursor:pointer}
+  .muted{color:var(--muted);font-size:14px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px solid var(--b);text-align:left;font-size:14px;vertical-align:top}
+  .pill{display:inline-block;padding:4px 8px;border:1px solid #ddd;border-radius:999px;font-size:12px;margin-right:6px;background:#f7f7f7}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .right{margin-left:auto}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:10000;display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l6 4v6c0 4-3 7-6 8-3-1-6-4-6-8V6l6-4z" stroke="#111" stroke-width="1.5" fill="none"/></svg>
+      <h1>Flaschenpost (GIAP)</h1>
+      <span class="muted right">Local-first · Address at birth</span>
+    </div>
+    <nav>
+      <button id="tab-compose" class="active">Compose</button>
+      <button id="tab-registry">Registry</button>
+      <button id="tab-settings">Settings</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Compose -->
+  <section id="view-compose" class="card">
+    <h2>Compose</h2>
+    <textarea id="idea" placeholder="Write your idea…"></textarea>
+    <div class="row">
+      <input id="tags" type="text" placeholder="tags (comma separated: water, solar, protocol)"/>
+    </div>
+    <div class="row">
+      <button id="btn-churchen" class="primary">Assign Address (churchen)</button>
+      <button id="btn-clear" class="secondary">Clear</button>
+    </div>
+    <p class="muted">Everything runs locally. Nothing leaves your device.</p>
+
+    <div id="result" class="card" style="display:none;margin-top:12px">
+      <h3>Address</h3>
+      <div class="row">
+        <div style="flex:1">
+          <label class="muted">IdeaID</label>
+          <input id="ideaId" type="text" readonly class="mono"/>
+        </div>
+        <div style="flex:1">
+          <label class="muted">Content Hash (SHA-256)</label>
+          <input id="hash" type="text" readonly class="mono"/>
+        </div>
+      </div>
+      <div class="row">
+        <button id="btn-copy" class="secondary">Copy IdeaID</button>
+        <button id="btn-copy-url" class="secondary">Copy Permalink</button>
+      </div>
+      <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
+    </div>
+  </section>
+
+  <!-- Registry -->
+  <section id="view-registry" class="card" style="display:none">
+    <h2>Registry</h2>
+    <table>
+      <thead><tr><th>IdeaID</th><th>Preview</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody id="tbl"></tbody>
+    </table>
+    <div class="row" style="margin-top:8px">
+      <button id="btn-export" class="secondary">Export (.json)</button>
+      <label class="secondary" style="border:1px solid #111;padding:9px 12px;border-radius:10px;background:#fff;cursor:pointer">
+        Import (.json) <input id="file-import" type="file" accept="application/json" style="display:none">
+      </label>
+    </div>
+  </section>
+
+  <!-- Settings -->
+  <section id="view-settings" class="card" style="display:none">
+    <h2>Settings</h2>
+    <div class="row">
+      <div class="muted">Storage cap</div>
+      <div><span class="pill">1000 ideas</span></div>
+    </div>
+    <div style="margin-top:8px" class="muted">
+      Coming soon: AI analysis hook, private sync, and share scopes.
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ---------- DOM ----------
+  const $ = s => document.querySelector(s);
+  const composeTab = $('#tab-compose'), regTab = $('#tab-registry'), setTab = $('#tab-settings');
+  const viewCompose = $('#view-compose'), viewReg = $('#view-registry'), viewSet = $('#view-settings');
+  const taIdea = $('#idea'), inpTags = $('#tags');
+  const btnChurch = $('#btn-churchen'), btnClear = $('#btn-clear');
+  const secResult = $('#result'), outId = $('#ideaId'), outHash = $('#hash');
+  const btnCopyId = $('#btn-copy'), btnCopyUrl = $('#btn-copy-url');
+  const tblBody = $('#tbl'), btnExport = $('#btn-export'), inpImport = $('#file-import');
+  const toast = $('#toast');
+
+  // ---------- State / Storage ----------
+  const STORAGE_KEY = 'giap_registry_v1';
+  const MAX_ENTRIES = 1000;
+  const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
+
+  function readReg(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); } catch { return []; } }
+  function writeReg(v){ localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); }
+
+  // ---------- Utils ----------
+  const todayStr = ()=>new Date().toISOString().slice(0,10).replace(/-/g,'');
+  function parseTags(s){ return (s||'').split(',').map(t=>t.trim()).filter(Boolean); }
+  async function sha256Hex(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  function ideaIdFrom(hashPrefix){ return `giap:${todayStr()}-${hashPrefix}`; }
+  function permalinkFor(id){
+    const u = new URL(location.href); u.searchParams.set('id', id); return u.toString();
+  }
+  function showToast(msg){
+    toast.textContent = msg; toast.style.display='block';
+    setTimeout(()=>toast.style.display='none', 1400);
+  }
+
+  // ---------- Tabs ----------
+  function show(view){
+    for (const b of [composeTab, regTab, setTab]) b.classList.remove('active');
+    for (const v of [viewCompose, viewReg, viewSet]) v.style.display='none';
+    if (view==='compose'){ composeTab.classList.add('active'); viewCompose.style.display='block'; }
+    if (view==='registry'){ regTab.classList.add('active'); viewReg.style.display='block'; }
+    if (view==='settings'){ setTab.classList.add('active'); viewSet.style.display='block'; }
+  }
+  composeTab.onclick=()=>show('compose');
+  regTab.onclick=()=>{ show('registry'); render(); };
+  setTab.onclick=()=>show('settings');
+
+  // ---------- Render Registry ----------
+  function render(){
+    const list = readReg().sort((a,b)=>b.date-a.date);
+    tblBody.innerHTML='';
+    for (const it of list){
+      const tr = document.createElement('tr');
+
+      const tdId = document.createElement('td');
+      const a = document.createElement('a'); a.href = '?id='+encodeURIComponent(it.id); a.textContent = it.id;
+      const bCopy = document.createElement('button'); bCopy.textContent='copy'; bCopy.className='secondary';
+      bCopy.style.padding='4px 8px'; bCopy.style.borderRadius='8px'; bCopy.onclick=()=>navigator.clipboard.writeText(it.id).then(()=>showToast('IdeaID copied'));
+      tdId.appendChild(a); tdId.appendChild(document.createTextNode(' ')); tdId.appendChild(bCopy);
+      tr.appendChild(tdId);
+
+      const tdPrev = document.createElement('td');
+      tdPrev.textContent = (it.title || '').replace(/\s+/g,' ').slice(0,120) + ((it.title||'').length>120?'…':'');
+      tr.appendChild(tdPrev);
+
+      const tdDate = document.createElement('td'); tdDate.textContent = new Date(it.date).toLocaleString(); tr.appendChild(tdDate);
+
+      const tdAct = document.createElement('td');
+      const bLoad = document.createElement('button'); bLoad.textContent='load'; bLoad.className='secondary'; bLoad.style.padding='4px 8px'; bLoad.style.borderRadius='8px';
+      bLoad.onclick=()=>{ taIdea.value=it.title||''; inpTags.value=(it.tags||[]).join(', '); show('compose'); };
+      const bDel = document.createElement('button'); bDel.textContent='delete'; bDel.className='secondary'; bDel.style.padding='4px 8px'; bDel.style.borderRadius='8px';
+      bDel.onclick=()=>{ const cur=readReg().filter(x=>x.id!==it.id); writeReg(cur); render(); showToast('Deleted'); };
+      tdAct.appendChild(bLoad); tdAct.appendChild(document.createTextNode(' ')); tdAct.appendChild(bDel);
+      tr.appendChild(tdAct);
+
+      tblBody.appendChild(tr);
+    }
+  }
+
+  // ---------- Churchen ----------
+  btnChurch.addEventListener('click', async ()=>{
+    const title = (taIdea.value||'').trim();
+    const tags = parseTags(inpTags.value);
+    if (!title){ alert('Please write your idea first.'); return; }
+
+    const hash = await sha256Hex(title + '||' + tags.join('|'));
+    const id = ideaIdFrom(hash.slice(0,10));
+    const entry = { id, title, tags, hash, date: Date.now() };
+
+    const reg = readReg();
+    if (!reg.some(x=>x.id===id)) reg.push(entry);
+    writeReg(cap(reg, MAX_ENTRIES));
+
+    outId.value = id; outHash.value = hash; secResult.style.display = '';
+    showToast('Idea churched');
+  });
+  btnClear.onclick = ()=>{ taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value=''; };
+
+  btnCopyId.onclick = ()=> navigator.clipboard.writeText(outId.value||'').then(()=>showToast('IdeaID copied'));
+  btnCopyUrl.onclick = ()=> navigator.clipboard.writeText(permalinkFor(outId.value||'')).then(()=>showToast('Permalink copied'));
+
+  // ---------- Export / Import ----------
+  btnExport.onclick = ()=>{
+    const blob = new Blob([JSON.stringify(readReg(), null, 2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='giap_registry.json'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
+  };
+  inpImport.onchange = async (e)=>{
+    const f = e.target.files?.[0]; if(!f) return;
+    try{
+      const text = await f.text(); const data = JSON.parse(text);
+      const cur = readReg(); const map = new Map(cur.map(x=>[x.id,x]));
+      for (const it of (Array.isArray(data)?data:[])){ if (it && it.id && !map.has(it.id)) map.set(it.id, it); }
+      writeReg(Array.from(map.values())); render(); showToast('Import OK');
+    } catch { alert('Import failed'); }
+  };
+
+  // ---------- Deep link & auto from ?idea= / ?auto=1 ----------
+  (function fromURL(){
+    const p = new URLSearchParams(location.search);
+    const idea = (p.get('idea')||'').trim();
+    if (!idea) return;
+    taIdea.value = idea.replace(/\+/g,' ');
+    const tags = (p.get('tags')||'').trim(); if (tags) inpTags.value = tags;
+    if (p.get('auto')==='1') setTimeout(()=>btnChurch.click(), 50);
+  })();
+
+  // Default view
+  show('compose');
+})();
+</script>
+
+<!-- Optional: später als PWA aktivieren
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+</script> -->
+</body>
+</html>
