@@ -1,5 +1,5 @@
 // sw.js (robust für GitHub Pages)
-const CACHE_NAME = 'giap-offline-v2';
+const CACHE_NAME = 'giap-offline-v3';
 
 // Basis-URL aus dem Service-Worker-Scope ermitteln, z.B. "/GIAP-global-idea-addressing-protocol/"
 const BASE = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/';
