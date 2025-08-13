@@ -335,6 +335,55 @@ if ('serviceWorker' in navigator) {
 
 <!-- PWA-Install-Controller (einmalig laden, mit Cache-Buster) -->
 <script src="/GIAP-global-idea-addressing-protocol/install.js?v=6"></script>
+<script>
+(function(){
+  const btn  = document.getElementById('btn-pwa-install');
+  const hint = document.getElementById('pwa-install-hint');
 
+  function say(t){ if(hint){ hint.textContent = t; } console.log('[PWA-DIAG]', t); }
+
+  if(!btn || !hint){
+    console.log('[PWA-DIAG] IDs nicht gefunden (#btn-pwa-install / #pwa-install-hint).');
+    return;
+  }
+
+  // 0) zeigt sofort, ob dieses Skript überhaupt geladen wurde
+  say('Installer-Skript aktiv (warte auf Event)…');
+  btn.disabled = true; btn.style.opacity = '0.6';
+
+  // 1) Service Worker Status anzeigen
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.ready
+      .then(() => {
+        const controlled = !!navigator.serviceWorker.controller;
+        say(controlled ? 'SW kontrolliert ✓ – warte auf Install-Event…'
+                       : 'SW neu registriert → einmal neu laden');
+      })
+      .catch(()=>{ say('SW ready Fehler'); });
+  } else {
+    say('Service Worker wird nicht unterstützt.');
+    return;
+  }
+
+  // 2) Das entscheidende Event
+  let deferred = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferred = e;
+    btn.disabled = false; btn.style.opacity = '1';
+    say('Bereit zur Installation. Tippe auf „Installieren“.');
+  });
+
+  // 3) Klick-Handler – zeigt dir sofort, ob ein Event da war
+  btn.addEventListener('click', async () => {
+    if(!deferred){ say('Noch kein Install-Event. Seite ggf. neu laden.'); return; }
+    btn.disabled = true;
+    deferred.prompt();
+    const choice = await deferred.userChoice;
+    say('Ergebnis: ' + (choice && choice.outcome));
+    deferred = null;
+  });
+})();
+</script>
 </body>
 </html>
