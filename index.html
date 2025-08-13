@@ -350,5 +350,12 @@ writeReg(cap(reg, MAX_ENTRIES));
       .catch(err => console.error('Service Worker Fehler:', err));
   }
 </script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .then(reg => console.log('SW ok:', reg.scope))
+      .catch(err => console.error('SW error:', err));
+  }
+</script>
 </body>
 </html>
