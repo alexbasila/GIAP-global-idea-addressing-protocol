@@ -1,49 +1,27 @@
-// sw.js
 const CACHE_NAME = 'giap-offline-v1';
 const ASSETS = [
-  './',                // Start-URL im Repo
-  './index.html',
-  './launch.html',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
+  './', './index.html', './launch.html',
+  './manifest.webmanifest', './icon-192.png', './icon-512.png',
 ];
 
-// Install: Assets in den Cache legen
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
   self.skipWaiting();
 });
-
-// Activate: alte Caches aufräumen
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(k => (k === CACHE_NAME ? null : caches.delete(k))))
-    )
-  );
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.map(k => k === CACHE_NAME ? null : caches.delete(k)))
+  ));
   self.clients.claim();
 });
-
-// Fetch: Cache-first, Fallback Netzwerk
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-      return fetch(req).then((res) => {
-        // GET-Responses optional nach-cachen
-        if (req.method === 'GET' && res.ok) {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
-        }
-        return res;
-      }).catch(() => {
-        // Offline-Fallback (z. B. index.html)
-        if (req.mode === 'navigate') return caches.match('./index.html');
-      });
-    })
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+      if (e.request.method === 'GET' && res.ok) {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then(c => c.put(e.request, copy));
+      }
+      return res;
+    }).catch(() => e.request.mode === 'navigate' ? caches.match('./index.html') : undefined))
   );
 });
