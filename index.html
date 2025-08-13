@@ -385,5 +385,61 @@ if ('serviceWorker' in navigator) {
   });
 })();
 </script>
+  <script>
+(function(){
+  const zone = document.getElementById('pwa-install-hint') || (function(){
+    const small = document.createElement('small');
+    small.id = 'pwa-install-hint';
+    small.className = 'muted';
+    (document.getElementById('pwa-install-card')||document.body).appendChild(small);
+    return small;
+  })();
+
+  function say(msg){ zone.textContent = msg; console.log('[PWA-DIAG]', msg); }
+
+  // 1) Manifest-Link prüfen + live nachladen (no-store)
+  const link = document.querySelector('link[rel="manifest"]');
+  if (!link) { say('Manifest-Link fehlt in <head>.'); return; }
+  say('Manifest verlinkt → lade…');
+
+  fetch(link.href, {cache:'no-store'})
+    .then(r => r.ok ? r.json() : Promise.reject('HTTP '+r.status))
+    .then(m => {
+      // Minimal-Kriterien prüfen
+      const okId = typeof m.id === 'string' && m.id.length > 0;
+      const okStart = typeof m.start_url === 'string' && m.start_url.startsWith('/GIAP-global-idea-addressing-protocol/');
+      const hasIcon192 = (m.icons||[]).some(i => /192/.test(i.sizes||''));
+      const hasIcon512 = (m.icons||[]).some(i => /512/.test(i.sizes||''));
+      if (!okId) { say('Manifest ok, aber id fehlt/leer → bitte id setzen.'); return; }
+      if (!okStart) { say('start_url liegt nicht im Scope.'); return; }
+      if (!hasIcon192 || !hasIcon512) { say('Icons 192/512 fehlen.'); return; }
+
+      // 2) Service Worker Kontrolle
+      if (!('serviceWorker' in navigator)) { say('Kein SW-Support im Browser.'); return; }
+      navigator.serviceWorker.ready.then(reg => {
+        const controlled = !!navigator.serviceWorker.controller;
+        if (!controlled) { say('SW registriert, aber kontrolliert noch nicht → einmal neu laden.'); return; }
+
+        say('SW ok ✓ – warte auf Install-Event…');
+
+        // 3) beforeinstallprompt Diagnose
+        let gotBIP = false;
+        window.addEventListener('beforeinstallprompt', (e) => {
+          gotBIP = true;
+          say('Install-Event da ✓ → Button sollte aktiv sein.');
+        });
+
+        // Falls nach 2s nichts kam
+        setTimeout(() => {
+          if (!gotBIP) {
+            // Hat der Browser evtl. schonmal dismissed? oder per Policy blockiert?
+            say('Kein Install-Event. Tipp: Seite kurz benutzen/neu laden; oder Chrome-Menü → „App installieren“.');
+          }
+        }, 2000);
+      });
+    })
+    .catch(err => say('Manifest nicht ladbar: '+ err));
+})();
+</script>
 </body>
 </html>
