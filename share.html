@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Flaschenpost Share</title>
+<script>
+  // URL-Parameter auslesen
+  const params = new URLSearchParams(window.location.search);
+  const idea = params.get("text") || params.get("title") || params.get("url") || "";
+
+  // Weiterleiten zur Hauptseite mit vorgefüllter Idee
+  if (idea) {
+    const target = `/GIAP-global-idea-addressing-protocol/index.html?idea=${encodeURIComponent(idea)}&auto=1`;
+    window.location.href = target;
+  } else {
+    document.write("<p>Keine geteilte Idee empfangen.</p>");
+  }
+</script>
+</head>
+<body>
+</body>
+</html>
