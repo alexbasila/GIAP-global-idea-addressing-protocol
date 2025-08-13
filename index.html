@@ -342,9 +342,10 @@ writeReg(cap(reg, MAX_ENTRIES));
   }, false);
 })();
 </script>
-  <script>
+<script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
+    // Relativ registrieren, damit Scope = Repo-Ordner ist
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
       .then(reg => console.log('Service Worker registriert:', reg.scope))
       .catch(err => console.error('Service Worker Fehler:', err));
   }
