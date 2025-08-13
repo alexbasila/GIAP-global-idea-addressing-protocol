@@ -39,7 +39,7 @@
   <link rel="manifest" href="/GIAP-global-idea-addressing-protocol/manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
 
-  <!-- Icons für Homescreen (ebenfalls mit Repo-Pfad) -->
+  <!-- Icons für Homescreen -->
   <link rel="icon" sizes="192x192" href="/GIAP-global-idea-addressing-protocol/icon-192.png">
   <link rel="icon" sizes="512x512" href="/GIAP-global-idea-addressing-protocol/icon-512.png">
 </head>
@@ -56,6 +56,7 @@
 </header>
 
 <main>
+  <!-- 1) Eingabe -->
   <section class="card" id="demo">
     <h2>1) Capture Idea → Assign Address</h2>
     <textarea id="idea" placeholder="Write your idea here…"></textarea>
@@ -66,6 +67,7 @@
     <p class="muted">Everything runs locally in your browser. Stored only in your LocalStorage.</p>
   </section>
 
+  <!-- Ergebnis -->
   <section class="card" id="result" style="display:none">
     <h2>Address</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -79,6 +81,7 @@
     <p class="muted">Permalink scheme: <code>giap://&lt;IdeaID&gt;</code> · Web: <code>?id=&lt;IdeaID&gt;</code></p>
   </section>
 
+  <!-- Registry -->
   <section class="card">
     <h2>2) Local Register</h2>
     <table class="table" id="tbl">
@@ -94,31 +97,26 @@
     </div>
   </section>
 
+  <!-- Tags -->
   <section class="card">
     <h2>3) (Optional) Tags</h2>
     <p class="muted">For later relevance matching – stored locally with the idea.</p>
     <input id="tags" type="text" placeholder="e.g. water, solar, protocol" />
   </section>
-  <section class="card" id="pwa-install-card">
-  <h2>Install as App</h2>
-  <div class="row">
-    <button id="btn-pwa-install" class="secondary" disabled>Installieren</button>
-    <small id="pwa-install-hint" class="muted"></small>
-  </div>
-</section>
-</main>
-<section class="card" id="pwa-install-card">
-  <h2>Install as App</h2>
-  <div class="row">
-    <button id="btn-pwa-install" class="secondary" disabled>Installieren</button>
-    <small id="pwa-install-hint" class="muted"></small>
-  </div>
-</section>
 
-<!-- Wichtig: mit kleinem Cache-Buster -->
-<script src="/GIAP-global-idea-addressing-protocol/install.js?v=4"></script>
+  <!-- EINZIGER Install-Block -->
+  <section class="card" id="pwa-install-card">
+    <h2>Install as App</h2>
+    <div class="row">
+      <button id="btn-pwa-install" class="secondary" disabled>Installieren</button>
+      <small id="pwa-install-hint" class="muted"></small>
+    </div>
+  </section>
+</main>
+
 <button id="judge-btn">Judge This Idea</button>
 
+<!-- ===== App-Logik ===== -->
 <script>
 (function(){
   'use strict';
@@ -133,20 +131,18 @@
   const secResult = $('#result'), outId = $('#ideaId'), outHash = $('#hash');
   const btnCopyId = $('#btn-copy'), btnCopyUrl = $('#btn-copy-url');
   const tblBody = document.querySelector('#tbl tbody');
-  const btnExport = $('#btn-export'), inpImport = $('#file-import');
-  const btnJudge = $('#judge-btn');
 
   // Helpers
   const todayStr = ()=>new Date().toISOString().slice(0,10).replace(/-/g,'');
-  function parseTags(s){ return (s||'').split(',').map(t=>t.trim()).filter(Boolean); }
-  function readReg(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
-  function writeReg(v){ localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); }
+  const parseTags = s => (s||'').split(',').map(t=>t.trim()).filter(Boolean);
+  const readReg = () => { try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } };
+  const writeReg = v => localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
   async function sha256Hex(str){
     const enc = new TextEncoder().encode(str);
     const buf = await crypto.subtle.digest('SHA-256', enc);
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
-  function ideaIdFrom(hashPrefix){ return `giap:${todayStr()}-${hashPrefix}`; }
+  const ideaIdFrom = hp => `giap:${todayStr()}-${hp}`;
 
   // Render registry
   function render(){
@@ -164,7 +160,8 @@
         if(navigator.share){ try{ await navigator.share({title:'GIAP Idea', text:it.id, url}); }catch{} } else {
           try{ await navigator.clipboard.writeText(url);}catch{} }
       };
-      tdId.appendChild(a); tdId.appendChild(document.createTextNode(' ')); tdId.appendChild(bCopy); tdId.appendChild(document.createTextNode(' ')); tdId.appendChild(bShare);
+      tdId.appendChild(a); tdId.appendChild(document.createTextNode(' '));
+      tdId.appendChild(bCopy); tdId.appendChild(document.createTextNode(' ')); tdId.appendChild(bShare);
       tr.appendChild(tdId);
 
       const tdPrev = document.createElement('td'); tdPrev.textContent = it.title || '(no title)'; tr.appendChild(tdPrev);
@@ -183,7 +180,7 @@
   }
 
   // Churchen
-  btnChurch.addEventListener('click', async ()=>{
+  document.getElementById('btn-churchen').addEventListener('click', async ()=>{
     const title = (taIdea.value||'').trim();
     const tags = parseTags(inpTags.value);
     if (!title){ alert('Please write your idea first.'); return; }
@@ -199,38 +196,15 @@
     render();
   });
 
-  btnClear.addEventListener('click', ()=>{
+  document.getElementById('btn-clear').addEventListener('click', ()=>{
     taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value='';
   });
 
   // Copy buttons
-  btnCopyId.addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(outId.value||''); }catch{} });
-  btnCopyUrl.addEventListener('click', async ()=>{
+  document.getElementById('btn-copy').addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(outId.value||''); }catch{} });
+  document.getElementById('btn-copy-url').addEventListener('click', async ()=>{
     const url = location.origin + location.pathname + '?id=' + encodeURIComponent(outId.value||'');
     try{ await navigator.clipboard.writeText(url); }catch{}
-  });
-
-  // Export / Import
-  btnExport.addEventListener('click', ()=>{
-    const blob = new Blob([JSON.stringify(readReg(), null, 2)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'giap_registry.json'; a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
-  });
-  inpImport.addEventListener('change', (e)=>{
-    const file = e.target.files && e.target.files[0]; if(!file) return;
-    const fr = new FileReader();
-    fr.onload = ()=>{
-      try{
-        const data = JSON.parse(fr.result||'[]');
-        const cur = readReg();
-        const map = new Map(cur.map(x=>[x.id,x]));
-        for (const it of (Array.isArray(data)?data:[])){ if (it && it.id && !map.has(it.id)) map.set(it.id, it); }
-        writeReg(Array.from(map.values()));
-        render();
-        alert('Import OK');
-      }catch{ alert('Import failed'); }
-    };
-    fr.readAsText(file);
   });
 
   // Deep link ?id=
@@ -300,56 +274,44 @@
 })();
 </script>
 
+<!-- Autofill aus ?idea=&tags=&auto=1 -->
 <script>
-/* Autofill aus ?idea=... (&tags=... optional) + Auto-Churchen bei ?auto=1 */
 (function () {
   const sp = new URLSearchParams(location.search);
   const idea = (sp.get('idea') || '').trim();
   if (!idea) return;
-
   const ideaEl = document.getElementById('idea');
   const tagsEl = document.getElementById('tags');
   const btn    = document.getElementById('btn-churchen');
-
   ideaEl.value = idea.replace(/\+/g, ' ');
   const tags = (sp.get('tags') || '').trim();
   if (tags) tagsEl.value = tags;
-
-  if (sp.get('auto') === '1') {
-    setTimeout(() => btn.click(), 50);
-  }
+  if (sp.get('auto') === '1') setTimeout(() => btn.click(), 50);
 })();
 </script>
 
+<!-- GIAP ←→ ChatGPT Bridge -->
 <script>
-/* GIAP ←→ ChatGPT Bridge */
 (function () {
   const ORIGIN_WHITELIST = ['https://chat.openai.com', 'https://chatgpt.com'];
-
   async function autoChurchen(idea, tagsCSV) {
     const ideaEl = document.getElementById('idea');
     const tagsEl = document.getElementById('tags');
     const btn    = document.getElementById('btn-churchen');
-
     if (!ideaEl || !btn) return { ok:false, error:'UI not ready' };
-
     ideaEl.value = idea || '';
     if (tagsEl && tagsCSV) tagsEl.value = tagsCSV;
-
     btn.click();
     await new Promise(r => setTimeout(r, 60));
-
     const id   = (document.getElementById('ideaId')?.value)||'';
     const hash = (document.getElementById('hash')?.value)||'';
     return { ok:true, id, hash };
   }
-
   window.addEventListener('message', async (ev) => {
     try {
       if (!ORIGIN_WHITELIST.includes(ev.origin)) return;
       const msg = ev.data || {};
       if (msg.type !== 'GIAP_CHURCHEN') return;
-
       const res = await autoChurchen(String(msg.idea||''), String(msg.tags||''));
       ev.source?.postMessage({ type:'GIAP_RESULT', correlate: msg.correlate, ...res }, ev.origin);
     } catch (e) {
@@ -359,26 +321,20 @@
 })();
 </script>
 
-<!-- Service Worker: mit absolutem Pfad + Scope für GitHub Pages -->
+<!-- Service Worker Registrierung (GitHub Pages: absoluter Pfad + Scope) -->
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/GIAP-global-idea-addressing-protocol/sw.js', {
-        scope: '/GIAP-global-idea-addressing-protocol/'
-      }).then(reg => {
-        console.log('SW registered:', reg.scope);
-      }).catch(err => console.error('SW error:', err));
-    });
-  }
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/GIAP-global-idea-addressing-protocol/sw.js', {
+      scope: '/GIAP-global-idea-addressing-protocol/'
+    }).then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.error('SW error:', err));
+  });
+}
 </script>
-<!-- Install-Button (wird erst gezeigt, wenn installierbar) -->
-<div id="install-wrap" style="position:fixed;right:16px;bottom:16px;z-index:10000;display:none">
-  <button id="installBtn"
-          style="padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer">
-    Installieren
-  </button>
-</div>
 
-<script src="/GIAP-global-idea-addressing-protocol/install.js"></script>
+<!-- PWA-Install-Controller (einmalig laden, mit Cache-Buster) -->
+<script src="/GIAP-global-idea-addressing-protocol/install.js?v=5"></script>
+
 </body>
 </html>
