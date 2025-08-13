@@ -1,47 +1,47 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>GIAP · Churchen (MVP)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>
-  :root{--w:900px}
-  *{box-sizing:border-box}
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
-  header{padding:0;background:#fff;border-bottom:1px solid #eee}
-  main{max-width:var(--w);margin:0 auto;padding:18px}
-  h1{margin:0 0 6px;font-size:28px}
-  h2{margin:0 0 10px}
-  .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
-  .hero{max-width:var(--w);margin:0 auto;padding:36px 16px 22px 16px;text-align:center}
-  .hero h1{font-size:32px;margin:0 0 8px}
-  .lead{color:#555}
-  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
-  input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
-  button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}
-  button.secondary{background:#fff;color:#111}
-  code{background:#f2f2f2;border-radius:6px;padding:2px 6px}
-  .muted{color:#666;font-size:14px}
-  .table{width:100%;border-collapse:collapse}
-  .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:top}
-  .pill-btn{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #111;background:#fff;color:#111;font-size:12px;cursor:pointer}
-  .pill-btn + .pill-btn{margin-left:6px}
-  /* Judge-Overlay */
-  #judge-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:grid;place-items:center;padding:16px}
-  #judge-card{background:#fff;border-radius:12px;max-width:820px;width:100%;padding:18px;box-shadow:0 12px 36px rgba(0,0,0,.25)}
-  /* Floating Judge Button */
-  #judge-btn{position:fixed;right:20px;bottom:20px;padding:10px 16px;background:#111;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-</style>
-  <!-- PWA: Manifest + Thema -->
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#...">
+  <meta charset="UTF-8" />
+  <title>GIAP · Churchen (MVP)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- Icons für Homescreen -->
-<link rel="icon" sizes="192x192" href="icon-192.png">
-<link rel="icon" sizes="512x512" href="icon-512.png">
+  <style>
+    :root{--w:900px}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
+    header{padding:0;background:#fff;border-bottom:1px solid #eee}
+    main{max-width:var(--w);margin:0 auto;padding:18px}
+    h1{margin:0 0 6px;font-size:28px}
+    h2{margin:0 0 10px}
+    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.04)}
+    .hero{max-width:var(--w);margin:0 auto;padding:36px 16px 22px 16px;text-align:center}
+    .hero h1{font-size:32px;margin:0 0 8px}
+    .lead{color:#555}
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    textarea{width:100%;min-height:140px;padding:12px;border:1px solid #ddd;border-radius:10px;font:inherit}
+    input[type=text]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font:inherit}
+    button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;font-weight:600;cursor:pointer}
+    button.secondary{background:#fff;color:#111}
+    code{background:#f2f2f2;border-radius:6px;padding:2px 6px}
+    .muted{color:#666;font-size:14px}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:top}
+    .pill-btn{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #111;background:#fff;color:#111;font-size:12px;cursor:pointer}
+    .pill-btn + .pill-btn{margin-left:6px}
+    /* Judge-Overlay */
+    #judge-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:grid;place-items:center;padding:16px}
+    #judge-card{background:#fff;border-radius:12px;max-width:820px;width:100%;padding:18px;box-shadow:0 12px 36px rgba(0,0,0,.25)}
+    /* Floating Judge Button */
+    #judge-btn{position:fixed;right:20px;bottom:20px;padding:10px 16px;background:#111;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+  </style>
+
+  <!-- PWA: Manifest + Theme-Farbe (Pfad für GitHub Pages beachten) -->
+  <link rel="manifest" href="/GIAP-global-idea-addressing-protocol/manifest.webmanifest">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Icons für Homescreen (ebenfalls mit Repo-Pfad) -->
+  <link rel="icon" sizes="192x192" href="/GIAP-global-idea-addressing-protocol/icon-192.png">
+  <link rel="icon" sizes="512x512" href="/GIAP-global-idea-addressing-protocol/icon-512.png">
 </head>
 <body>
 
@@ -109,8 +109,8 @@
 
   const STORAGE_KEY = 'giap_registry_v1';
   const MAX_ENTRIES = 1000;
-// behält die jüngsten n Einträge (älteste fallen raus)
-const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
+  const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
+
   const $ = sel => document.querySelector(sel);
   const taIdea = $('#idea'), inpTags = $('#tags');
   const btnChurch = $('#btn-churchen'), btnClear = $('#btn-clear');
@@ -140,7 +140,6 @@ const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
       const tr = document.createElement('tr');
 
       const tdId = document.createElement('td');
-      // Link + Kopieren/Teilen
       const a = document.createElement('a'); a.href = '?id='+encodeURIComponent(it.id); a.textContent = it.id;
       const bCopy = document.createElement('button'); bCopy.textContent='kopieren'; bCopy.className='pill-btn';
       bCopy.onclick = async (e)=>{e.preventDefault(); try{ await navigator.clipboard.writeText(it.id);}catch{} };
@@ -178,13 +177,15 @@ const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
 
     const reg = readReg();
     if (!reg.some(x=>x.id===id)) reg.push(entry);
-writeReg(cap(reg, MAX_ENTRIES));
+    writeReg(cap(reg, MAX_ENTRIES));
 
     outId.value = id; outHash.value = hash; secResult.style.display = '';
     render();
   });
 
-  btnClear.addEventListener('click', ()=>{ taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value=''; });
+  btnClear.addEventListener('click', ()=>{
+    taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value='';
+  });
 
   // Copy buttons
   btnCopyId.addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(outId.value||''); }catch{} });
@@ -224,7 +225,7 @@ writeReg(cap(reg, MAX_ENTRIES));
     document.getElementById('result').scrollIntoView({behavior:'smooth'});
   })();
 
-  // Judge
+  // Judge demo
   function jaccard(a=[], b=[]){
     const A=new Set(a.map(x=>String(x).toLowerCase()));
     const B=new Set(b.map(x=>String(x).toLowerCase()));
@@ -235,7 +236,7 @@ writeReg(cap(reg, MAX_ENTRIES));
   function ensureMin2(){
     let r = readReg();
     if (r.length >= 2) return r;
-    const t = todayStr();
+    const t = new Date().toISOString().slice(0,10).replace(/-/g,'');
     const seed = [
       { id:`giap:${t}-seedA`, title:'Student in Nairobi: water filter', tags:['water','innovation','sustainability'], date: Date.now() },
       { id:`giap:${t}-seedB`, title:'Solar saline plantage', tags:['solar','desalination','sustainability'], date: Date.now() }
@@ -268,9 +269,9 @@ writeReg(cap(reg, MAX_ENTRIES));
         <button id="judge-close" class="secondary">Close</button>
       </div>`;
     o.appendChild(c); document.body.appendChild(o);
-    $('#judge-close').onclick=()=>o.remove();
+    document.getElementById('judge-close').onclick=()=>o.remove();
   }
-  btnJudge.addEventListener('click', ()=>{
+  document.getElementById('judge-btn').addEventListener('click', ()=>{
     const reg = ensureMin2();
     const i = Math.floor(Math.random()*reg.length);
     let j = Math.floor(Math.random()*reg.length); if (reg.length>1) while (j===i) j = Math.floor(Math.random()*reg.length);
@@ -282,7 +283,8 @@ writeReg(cap(reg, MAX_ENTRIES));
   render();
 })();
 </script>
-  <script>
+
+<script>
 /* Autofill aus ?idea=... (&tags=... optional) + Auto-Churchen bei ?auto=1 */
 (function () {
   const sp = new URLSearchParams(location.search);
@@ -293,9 +295,7 @@ writeReg(cap(reg, MAX_ENTRIES));
   const tagsEl = document.getElementById('tags');
   const btn    = document.getElementById('btn-churchen');
 
-  // URLSearchParams decodiert bereits; der +→Leerzeichen-Fallback schadet nicht
   ideaEl.value = idea.replace(/\+/g, ' ');
-
   const tags = (sp.get('tags') || '').trim();
   if (tags) tagsEl.value = tags;
 
@@ -306,9 +306,9 @@ writeReg(cap(reg, MAX_ENTRIES));
 </script>
 
 <script>
-/* GIAP ←→ ChatGPT Bridge: postMessage-Empfang und Antwort */
+/* GIAP ←→ ChatGPT Bridge */
 (function () {
-  const ORIGIN_WHITELIST = ['https://chat.openai.com', 'https://chatgpt.com']; // ggf. erweitern
+  const ORIGIN_WHITELIST = ['https://chat.openai.com', 'https://chatgpt.com'];
 
   async function autoChurchen(idea, tagsCSV) {
     const ideaEl = document.getElementById('idea');
@@ -320,7 +320,7 @@ writeReg(cap(reg, MAX_ENTRIES));
     ideaEl.value = idea || '';
     if (tagsEl && tagsCSV) tagsEl.value = tagsCSV;
 
-    btn.click();                             // nutzt deine bestehende Logik
+    btn.click();
     await new Promise(r => setTimeout(r, 60));
 
     const id   = (document.getElementById('ideaId')?.value)||'';
@@ -330,7 +330,7 @@ writeReg(cap(reg, MAX_ENTRIES));
 
   window.addEventListener('message', async (ev) => {
     try {
-      if (!ORIGIN_WHITELIST.includes(ev.origin)) return;   // Sicherheit
+      if (!ORIGIN_WHITELIST.includes(ev.origin)) return;
       const msg = ev.data || {};
       if (msg.type !== 'GIAP_CHURCHEN') return;
 
@@ -342,20 +342,19 @@ writeReg(cap(reg, MAX_ENTRIES));
   }, false);
 })();
 </script>
+
+<!-- Service Worker: mit absolutem Pfad + Scope für GitHub Pages -->
 <script>
   if ('serviceWorker' in navigator) {
-    // Relativ registrieren, damit Scope = Repo-Ordner ist
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .then(reg => console.log('Service Worker registriert:', reg.scope))
-      .catch(err => console.error('Service Worker Fehler:', err));
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/GIAP-global-idea-addressing-protocol/sw.js', {
+        scope: '/GIAP-global-idea-addressing-protocol/'
+      }).then(reg => {
+        console.log('SW registered:', reg.scope);
+      }).catch(err => console.error('SW error:', err));
+    });
   }
 </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .then(reg => console.log('SW ok:', reg.scope))
-      .catch(err => console.error('SW error:', err));
-  }
-</script>
+
 </body>
 </html>
