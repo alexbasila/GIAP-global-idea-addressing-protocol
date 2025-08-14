@@ -1,15 +1,13 @@
 {
-  "id": "/GIAP-global-idea-addressing-protocol/app-v1",
   "name": "Flaschenpost (GIAP)",
   "short_name": "Flaschenpost",
+  "id": "/GIAP-global-idea-addressing-protocol", 
   "display": "standalone",
-  "start_url": "/GIAP-global-idea-addressing-protocol/index.html?src=pwa",
+  "start_url": "/GIAP-global-idea-addressing-protocol/index.html?installed=1",
   "scope": "/GIAP-global-idea-addressing-protocol/",
-  "theme_color": "#0f172a",
-  "background_color": "#fafafa",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
   ],
   "share_target": {
     "action": "/GIAP-global-idea-addressing-protocol/share.html",
