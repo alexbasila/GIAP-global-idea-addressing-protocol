@@ -28,18 +28,16 @@
     .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:top}
     .pill-btn{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #111;background:#fff;color:#111;font-size:12px;cursor:pointer}
     .pill-btn + .pill-btn{margin-left:6px}
-    /* Judge-Overlay */
     #judge-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:grid;place-items:center;padding:16px}
     #judge-card{background:#fff;border-radius:12px;max-width:820px;width:100%;padding:18px;box-shadow:0 12px 36px rgba(0,0,0,.25)}
-    /* Floating Judge Button */
     #judge-btn{position:fixed;right:20px;bottom:20px;padding:10px 16px;background:#111;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)}
   </style>
 
-  <!-- PWA: Manifest + Theme-Farbe (Pfad für GitHub Pages beachten) -->
-  <link rel="manifest" href="/GIAP-global-idea-addressing-protocol/manifest.webmanifest">
+  <!-- Manifest (Cache-Buster zwingt Chrome zum Neu-Laden) -->
+  <link rel="manifest" href="/GIAP-global-idea-addressing-protocol/manifest.webmanifest?v=4">
   <meta name="theme-color" content="#0f172a">
 
-  <!-- Icons für Homescreen -->
+  <!-- Icons -->
   <link rel="icon" sizes="192x192" href="/GIAP-global-idea-addressing-protocol/icon-192.png">
   <link rel="icon" sizes="512x512" href="/GIAP-global-idea-addressing-protocol/icon-512.png">
 </head>
@@ -108,7 +106,7 @@
   <section class="card" id="pwa-install-card">
     <h2>Install as App</h2>
     <div class="row">
-      <button id="btn-pwa-install" class="secondary" disabled>Installieren</button>
+      <button id="btn-pwa-install" class="secondary" hidden>Installieren</button>
       <small id="pwa-install-hint" class="muted"></small>
     </div>
   </section>
@@ -129,10 +127,8 @@
   const taIdea = $('#idea'), inpTags = $('#tags');
   const btnChurch = $('#btn-churchen'), btnClear = $('#btn-clear');
   const secResult = $('#result'), outId = $('#ideaId'), outHash = $('#hash');
-  const btnCopyId = $('#btn-copy'), btnCopyUrl = $('#btn-copy-url');
   const tblBody = document.querySelector('#tbl tbody');
 
-  // Helpers
   const todayStr = ()=>new Date().toISOString().slice(0,10).replace(/-/g,'');
   const parseTags = s => (s||'').split(',').map(t=>t.trim()).filter(Boolean);
   const readReg = () => { try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } };
@@ -144,7 +140,6 @@
   }
   const ideaIdFrom = hp => `giap:${todayStr()}-${hp}`;
 
-  // Render registry
   function render(){
     const list = readReg().sort((a,b)=>b.date-a.date);
     tblBody.innerHTML = '';
@@ -179,7 +174,6 @@
     }
   }
 
-  // Churchen
   document.getElementById('btn-churchen').addEventListener('click', async ()=>{
     const title = (taIdea.value||'').trim();
     const tags = parseTags(inpTags.value);
@@ -200,22 +194,15 @@
     taIdea.value=''; inpTags.value=''; secResult.style.display='none'; outId.value=''; outHash.value='';
   });
 
-  // Copy buttons
-  document.getElementById('btn-copy').addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(outId.value||''); }catch{} });
-  document.getElementById('btn-copy-url').addEventListener('click', async ()=>{
-    const url = location.origin + location.pathname + '?id=' + encodeURIComponent(outId.value||'');
-    try{ await navigator.clipboard.writeText(url); }catch{}
-  });
-
-  // Deep link ?id=
   (function handleDeepLink(){
     const id = new URLSearchParams(location.search).get('id'); if(!id) return;
     const reg = readReg(); const found = reg.find(x=>x.id===id);
-    outId.value = id; outHash.value = found? (found.hash||'') : ''; secResult.style.display = '';
+    document.getElementById('ideaId').value = id;
+    document.getElementById('hash').value = found? (found.hash||'') : '';
+    document.getElementById('result').style.display = '';
     document.getElementById('result').scrollIntoView({behavior:'smooth'});
   })();
 
-  // Judge demo
   function jaccard(a=[], b=[]){
     const A=new Set(a.map(x=>String(x).toLowerCase()));
     const B=new Set(b.map(x=>String(x).toLowerCase()));
@@ -269,176 +256,42 @@
     showOverlay(A,B, jaccard(A.tags||[], B.tags||[]));
   });
 
-  // Initial render
   render();
 })();
 </script>
 
-<!-- Autofill aus ?idea=&tags=&auto=1 -->
-<script>
-(function () {
-  const sp = new URLSearchParams(location.search);
-  const idea = (sp.get('idea') || '').trim();
-  if (!idea) return;
-  const ideaEl = document.getElementById('idea');
-  const tagsEl = document.getElementById('tags');
-  const btn    = document.getElementById('btn-churchen');
-  ideaEl.value = idea.replace(/\+/g, ' ');
-  const tags = (sp.get('tags') || '').trim();
-  if (tags) tagsEl.value = tags;
-  if (sp.get('auto') === '1') setTimeout(() => btn.click(), 50);
-})();
-</script>
-
-<!-- GIAP ←→ ChatGPT Bridge -->
-<script>
-(function () {
-  const ORIGIN_WHITELIST = ['https://chat.openai.com', 'https://chatgpt.com'];
-  async function autoChurchen(idea, tagsCSV) {
-    const ideaEl = document.getElementById('idea');
-    const tagsEl = document.getElementById('tags');
-    const btn    = document.getElementById('btn-churchen');
-    if (!ideaEl || !btn) return { ok:false, error:'UI not ready' };
-    ideaEl.value = idea || '';
-    if (tagsEl && tagsCSV) tagsEl.value = tagsCSV;
-    btn.click();
-    await new Promise(r => setTimeout(r, 60));
-    const id   = (document.getElementById('ideaId')?.value)||'';
-    const hash = (document.getElementById('hash')?.value)||'';
-    return { ok:true, id, hash };
-  }
-  window.addEventListener('message', async (ev) => {
-    try {
-      if (!ORIGIN_WHITELIST.includes(ev.origin)) return;
-      const msg = ev.data || {};
-      if (msg.type !== 'GIAP_CHURCHEN') return;
-      const res = await autoChurchen(String(msg.idea||''), String(msg.tags||''));
-      ev.source?.postMessage({ type:'GIAP_RESULT', correlate: msg.correlate, ...res }, ev.origin);
-    } catch (e) {
-      ev.source?.postMessage({ type:'GIAP_RESULT', ok:false, error:String(e) }, ev.origin);
-    }
-  }, false);
-})();
-</script>
-
-<!-- Service Worker Registrierung (GitHub Pages: absoluter Pfad + Scope) -->
+<!-- Service Worker registrieren (einmalig, korrekter Scope) -->
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/GIAP-global-idea-addressing-protocol/sw.js', {
       scope: '/GIAP-global-idea-addressing-protocol/'
-    }).then(reg => console.log('SW registered:', reg.scope))
-      .catch(err => console.error('SW error:', err));
+    }).catch(console.error);
   });
 }
 </script>
 
-<!-- PWA-Install-Controller (einmalig laden, mit Cache-Buster) -->
-<script src="/GIAP-global-idea-addressing-protocol/install.js?v=6"></script>
+<!-- PWA: super-simpler Install-Controller -->
 <script>
 (function(){
   const btn  = document.getElementById('btn-pwa-install');
   const hint = document.getElementById('pwa-install-hint');
-
-  function say(t){ if(hint){ hint.textContent = t; } console.log('[PWA-DIAG]', t); }
-
-  if(!btn || !hint){
-    console.log('[PWA-DIAG] IDs nicht gefunden (#btn-pwa-install / #pwa-install-hint).');
-    return;
-  }
-
-  // 0) zeigt sofort, ob dieses Skript überhaupt geladen wurde
-  say('Installer-Skript aktiv (warte auf Event)…');
-  btn.disabled = true; btn.style.opacity = '0.6';
-
-  // 1) Service Worker Status anzeigen
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.ready
-      .then(() => {
-        const controlled = !!navigator.serviceWorker.controller;
-        say(controlled ? 'SW kontrolliert ✓ – warte auf Install-Event…'
-                       : 'SW neu registriert → einmal neu laden');
-      })
-      .catch(()=>{ say('SW ready Fehler'); });
-  } else {
-    say('Service Worker wird nicht unterstützt.');
-    return;
-  }
-
-  // 2) Das entscheidende Event
   let deferred = null;
+
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferred = e;
-    btn.disabled = false; btn.style.opacity = '1';
-    say('Bereit zur Installation. Tippe auf „Installieren“.');
+    if (btn) btn.hidden = false;
+    if (hint) hint.textContent = 'Bereit zur Installation.';
   });
 
-  // 3) Klick-Handler – zeigt dir sofort, ob ein Event da war
-  btn.addEventListener('click', async () => {
-    if(!deferred){ say('Noch kein Install-Event. Seite ggf. neu laden.'); return; }
-    btn.disabled = true;
+  if (btn) btn.addEventListener('click', async () => {
+    if (!deferred) { if (hint) hint.textContent = 'Noch kein Install-Event. Kurz neu laden.'; return; }
+    btn.hidden = true;
     deferred.prompt();
-    const choice = await deferred.userChoice;
-    say('Ergebnis: ' + (choice && choice.outcome));
+    await deferred.userChoice;
     deferred = null;
   });
-})();
-</script>
-  <script>
-(function(){
-  const zone = document.getElementById('pwa-install-hint') || (function(){
-    const small = document.createElement('small');
-    small.id = 'pwa-install-hint';
-    small.className = 'muted';
-    (document.getElementById('pwa-install-card')||document.body).appendChild(small);
-    return small;
-  })();
-
-  function say(msg){ zone.textContent = msg; console.log('[PWA-DIAG]', msg); }
-
-  // 1) Manifest-Link prüfen + live nachladen (no-store)
-  const link = document.querySelector('link[rel="manifest"]');
-  if (!link) { say('Manifest-Link fehlt in <head>.'); return; }
-  say('Manifest verlinkt → lade…');
-
-  fetch(link.href, {cache:'no-store'})
-    .then(r => r.ok ? r.json() : Promise.reject('HTTP '+r.status))
-    .then(m => {
-      // Minimal-Kriterien prüfen
-      const okId = typeof m.id === 'string' && m.id.length > 0;
-      const okStart = typeof m.start_url === 'string' && m.start_url.startsWith('/GIAP-global-idea-addressing-protocol/');
-      const hasIcon192 = (m.icons||[]).some(i => /192/.test(i.sizes||''));
-      const hasIcon512 = (m.icons||[]).some(i => /512/.test(i.sizes||''));
-      if (!okId) { say('Manifest ok, aber id fehlt/leer → bitte id setzen.'); return; }
-      if (!okStart) { say('start_url liegt nicht im Scope.'); return; }
-      if (!hasIcon192 || !hasIcon512) { say('Icons 192/512 fehlen.'); return; }
-
-      // 2) Service Worker Kontrolle
-      if (!('serviceWorker' in navigator)) { say('Kein SW-Support im Browser.'); return; }
-      navigator.serviceWorker.ready.then(reg => {
-        const controlled = !!navigator.serviceWorker.controller;
-        if (!controlled) { say('SW registriert, aber kontrolliert noch nicht → einmal neu laden.'); return; }
-
-        say('SW ok ✓ – warte auf Install-Event…');
-
-        // 3) beforeinstallprompt Diagnose
-        let gotBIP = false;
-        window.addEventListener('beforeinstallprompt', (e) => {
-          gotBIP = true;
-          say('Install-Event da ✓ → Button sollte aktiv sein.');
-        });
-
-        // Falls nach 2s nichts kam
-        setTimeout(() => {
-          if (!gotBIP) {
-            // Hat der Browser evtl. schonmal dismissed? oder per Policy blockiert?
-            say('Kein Install-Event. Tipp: Seite kurz benutzen/neu laden; oder Chrome-Menü → „App installieren“.');
-          }
-        }, 2000);
-      });
-    })
-    .catch(err => say('Manifest nicht ladbar: '+ err));
 })();
 </script>
 </body>
