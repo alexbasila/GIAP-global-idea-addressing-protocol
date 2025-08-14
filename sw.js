@@ -1,4 +1,4 @@
-// sw.js
+// sw.js – GIAP PWA (GitHub Pages-sicher)
 const CACHE_NAME = 'giap-offline-v5';
 
 // Basis-URL aus dem SW-Scope (z.B. "/GIAP-global-idea-addressing-protocol/")
@@ -6,9 +6,9 @@ const BASE = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/'
 const U = p => BASE + p.replace(/^\/+/, '');
 
 const ASSETS = [
-  U(''),                     // Start-URL ("/repo/")
+  U(''),              // Start-URL ("/repo/")
   U('index.html'),
-  U('manifest.webmanifest')  // nur sichere, garantierte Assets
+  U('manifest.webmanifest') // keine PNGs eintragen → SVGs sind inline im Manifest
 ];
 
 self.addEventListener('install', event => {
@@ -28,7 +28,7 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Navigationen → index.html; sonst: Cache-First, dann Netz
+// Navigationen → index.html; andere GETs: Cache-First, dann Netz
 self.addEventListener('fetch', event => {
   const req = event.request;
 
