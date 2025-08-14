@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GIAP · Install</title>
+
+<!-- Manifest + Theme -->
+<link rel="manifest" href="/GIAP-global-idea-addressing-protocol/manifest.webmanifest">
+<meta name="theme-color" content="#0f172a">
+
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; }
+  .card { max-width: 780px; margin: 0 auto; background: #fff; color:#111;
+          border: 1px solid #eee; border-radius: 12px; padding: 18px;
+          box-shadow: 0 4px 18px rgba(0,0,0,.05); }
+  h1 { margin: 0 0 6px; }
+  button { padding: 12px 16px; border-radius: 10px; border: 1px solid #111;
+           background: #111; color:#fff; font-weight:600; cursor:pointer; }
+  button[disabled]{opacity:.5; cursor:not-allowed}
+  pre { background:#f6f6f6; padding:10px; border-radius:10px; overflow:auto; }
+  .muted{color:#666}
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Install GIAP as App</h1>
+    <p class="muted">Diese Seite testet nur die PWA-Installation – ohne weitere UI.</p>
+
+    <div class="row" style="margin:14px 0">
+      <button id="installBtn" disabled>Installieren</button>
+      <span id="hint" class="muted"></span>
+    </div>
+
+    <details>
+      <summary>Diagnose</summary>
+      <pre id="diag"></pre>
+    </details>
+
+    <p class="muted" style="margin-top:10px">
+      Falls der Button grau bleibt: Browser-Menü → <b>App installieren</b> (nicht „Zum Startbildschirm hinzufügen“).
+    </p>
+  </div>
+
+<script>
+// --- Service Worker (GitHub Pages: absoluter Pfad + Scope) ---
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/GIAP-global-idea-addressing-protocol/sw.js', {
+    scope: '/GIAP-global-idea-addressing-protocol/'
+  }).then(r => console.log('SW scope:', r.scope))
+    .catch(e => console.error('SW reg error', e));
+}
+
+(function(){
+  const btn  = document.getElementById('installBtn');
+  const hint = document.getElementById('hint');
+  const diag = document.getElementById('diag');
+
+  const log = (...a)=>{ console.log('[PWA]', ...a); diag.textContent += a.join(' ')+'\n'; };
+  const show= (t)=>{ hint.textContent = t; log(t); };
+
+  const isStandalone = matchMedia('(display-mode: standalone)').matches
+                    || matchMedia('(display-mode: window-controls-overlay)').matches
+                    || (navigator.standalone===true);
+
+  log('URL:', location.href);
+  log('Standalone:', isStandalone);
+  log('SW supported:', 'serviceWorker' in navigator);
+
+  if (isStandalone) {
+    btn.disabled = true;
+    show('Schon installiert (standalone).');
+    return;
+  }
+
+  if (!('serviceWorker' in navigator)) {
+    btn.disabled = true;
+    show('Service Worker nicht unterstützt.');
+    return;
+  }
+
+  let deferredPrompt = null;
+  btn.disabled = true;
+  show('SW kontrolliert? … warte');
+
+  // Wenn SW ready ist, notieren
+  navigator.serviceWorker.ready.then(()=> {
+    log('SW ready ✓');
+  }).catch(()=>{});
+
+  window.addEventListener('beforeinstallprompt', (ev)=>{
+    ev.preventDefault();
+    deferredPrompt = ev;
+    btn.disabled = false;
+    show('Bereit zur Installation.');
+    log('beforeinstallprompt fired');
+  });
+
+  window.addEventListener('appinstalled', ()=>{
+    show('App installiert ✔');
+    log('appinstalled');
+  });
+
+  // Falls Event nicht kommt, kurze Diagnose nach 1.5s
+  setTimeout(async ()=>{
+    if (deferredPrompt) return;
+    const controlled = !!navigator.serviceWorker.controller;
+    log('SW controlled:', controlled);
+    if (!controlled) {
+      show('Service Worker neu – einmal neu laden.');
+    } else {
+      show('Kein Install-Event (Chrome-Heuristik). Menü → „App installieren“ probieren.');
+    }
+  }, 1500);
+
+  btn.addEventListener('click', async ()=>{
+    if (!deferredPrompt) { show('Noch nicht bereit. Neu laden oder Menü nutzen.'); return; }
+    btn.disabled = true;
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice.catch(()=>null);
+    log('userChoice:', choice && choice.outcome);
+    if (!choice || choice.outcome !== 'accepted') {
+      show('Abgebrochen. Du kannst es später erneut versuchen.');
+    }
+    deferredPrompt = null;
+  });
+})();
+</script>
+</body>
+</html>
