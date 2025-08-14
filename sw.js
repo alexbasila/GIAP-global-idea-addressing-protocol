@@ -1,63 +1,59 @@
-// sw.js
+// sw.js – robust für GitHub Pages (Repo-Scope)
 const CACHE_NAME = 'giap-offline-v5';
 
-self.addEventListener('install', (event) => {
-  event.waitUntil((async () => {
-    const base = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/';
-    const u = (p) => base + p.replace(/^\/+/, '');
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll([
-      u(''),
-      u('index.html'),
-      u('manifest.webmanifest'),
-      u('icon-192.png'),
-      u('icon-512.png')
-    ]);
-  })());
+// Basis-URL aus dem SW-Scope ermitteln, z.B. "/GIAP-global-idea-addressing-protocol/"
+const BASE = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/';
+const U = p => BASE + p.replace(/^\/+/, '');
+
+const ASSETS = [
+  U(''),
+  U('index.html'),
+  U('manifest.webmanifest'),
+  U('icon-192.png'),
+  U('icon-512.png'),
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(c => c.addAll(ASSETS))
+      .catch(err => console.error('[SW] addAll failed', err))
+  );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.map(k => k === CACHE_NAME ? Promise.resolve() : caches.delete(k)));
-  })());
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => (k === CACHE_NAME ? Promise.resolve() : caches.delete(k)))))
+  );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
+// Navigation: immer auf index.html (Cache → Netz → Fallback)
+self.addEventListener('fetch', event => {
   const req = event.request;
 
-  // Navigationsanfragen → index.html (offline-freundlich)
   if (req.mode === 'navigate') {
-    event.respondWith((async () => {
-      const base = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/';
-      const u = (p) => base + p.replace(/^\/+/, '');
-      const cached = await caches.match(u('index.html'), { ignoreSearch: true });
-      try {
-        return (await fetch(req)) || cached || Response.error();
-      } catch {
-        return cached || Response.error();
-      }
-    })());
+    event.respondWith(
+      caches.match(U('index.html'), { ignoreSearch: true })
+        .then(hit => hit || fetch(req))
+        .catch(() => caches.match(U('index.html')))
+    );
     return;
   }
 
-  // Sonst: Cache-First, dann Netz
   if (req.method === 'GET') {
-    event.respondWith((async () => {
-      const hit = await caches.match(req, { ignoreSearch: true });
-      if (hit) return hit;
-      try {
-        const res = await fetch(req);
-        if (res && res.ok) {
-          const c = await caches.open(CACHE_NAME);
-          c.put(req, res.clone());
-        }
-        return res;
-      } catch {
-        return Response.error();
-      }
-    })());
+    event.respondWith(
+      caches.match(req, { ignoreSearch: true }).then(hit => {
+        if (hit) return hit;
+        return fetch(req).then(res => {
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then(c => c.put(req, copy));
+          }
+          return res;
+        });
+      }).catch(() => undefined)
+    );
   }
 });
