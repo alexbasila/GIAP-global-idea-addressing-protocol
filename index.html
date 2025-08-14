@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>GIAP · Churchen (MVP)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Manifest (mit Cache-Buster, damit Chrome sicher neu lädt) -->
-  <link rel="manifest" href="/GIAP-global-idea-addressing-protocol/manifest.webmanifest?v=7">
-  <meta name="theme-color" content="#0f172a">
+  <title>GIAP · Churchen (PWA)</title>
+
+  <!-- Manifest mit Cache-Buster, absoluter Pfad fürs Repo -->
+  <link rel="manifest" href="/GIAP-global-idea-addressing-protocol/manifest.webmanifest?v=8" />
+  <meta name="theme-color" content="#0f172a" />
 
   <style>
     :root{--w:900px}
@@ -31,29 +32,24 @@
     .table th,.table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:top}
     .pill-btn{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #111;background:#fff;color:#111;font-size:12px;cursor:pointer}
     .pill-btn + .pill-btn{margin-left:6px}
-    #log{white-space:pre-wrap;font-family:ui-monospace, Menlo, Consolas, monospace;background:#0b0b0b;color:#fff;border-radius:8px;padding:10px;margin-top:10px}
-    #judge-btn{position:fixed;right:20px;bottom:20px;padding:10px 16px;background:#111;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+    #log{white-space:pre-wrap;font:12px ui-monospace,Menlo,Consolas,monospace;color:#0a0;background:#eef;border-radius:8px;padding:8px;margin-top:8px}
   </style>
-
-  <!-- Icons (Homescreen) -->
-  <link rel="icon" sizes="192x192" href="/GIAP-global-idea-addressing-protocol/icon-192.png">
-  <link rel="icon" sizes="512x512" href="/GIAP-global-idea-addressing-protocol/icon-512.png">
 </head>
 <body>
 
 <header>
   <div style="background:#0f172a;color:#fff;padding:10px 14px;text-align:center;font-size:14px">
-    Private MVP · 100% client-side · Nothing leaves your browser
+    GIAP · Private MVP · 100% client-side · Nothing leaves your browser
   </div>
   <div class="hero">
     <h1>Every Idea. One Click. Global Reach.</h1>
-    <p class="lead">GIAP gives every idea a unique, permanent address at birth — no gatekeepers, no delay. You think it, and it’s connected.</p>
+    <p class="lead">GIAP gives every idea a unique, permanent address at birth — no gatekeepers, no delay.</p>
   </div>
 </header>
 
 <main>
   <!-- 1) Eingabe -->
-  <section class="card">
+  <section class="card" id="demo">
     <h2>1) Capture Idea → Assign Address</h2>
     <textarea id="idea" placeholder="Write your idea here…"></textarea>
     <div class="row">
@@ -100,31 +96,25 @@
     <input id="tags" type="text" placeholder="e.g. water, solar, protocol" />
   </section>
 
-  <!-- EINZIGER Install-Block -->
+  <!-- Install-Block (einziger) -->
   <section class="card" id="pwa-install-card">
     <h2>Install as App</h2>
     <div class="row">
-      <button id="btn-pwa-install" class="secondary" disabled>Installieren</button>
+      <button id="btn-pwa-install" class="secondary" hidden>Installieren</button>
       <small id="pwa-install-hint" class="muted"></small>
     </div>
     <div id="log"></div>
   </section>
 </main>
 
-<button id="judge-btn">Judge This Idea</button>
-
+<!-- ===== App-Logik (GIAP) ===== -->
 <script>
-/* ===================== GIAP APP CORE (lokal, client-side) ===================== */
-(function(){
+(() => {
   'use strict';
-
   const STORAGE_KEY = 'giap_registry_v1';
-  const MAX_ENTRIES = 1000;
-  const cap = (arr, n) => arr.sort((a,b)=>a.date - b.date).slice(-n);
-
-  const $ = sel => document.querySelector(sel);
+  const $ = s => document.querySelector(s);
   const taIdea = $('#idea'), inpTags = $('#tags');
-  const secResult = $('#result'), outId = $('#ideaId'), outHash = $('#hash');
+  const outId = $('#ideaId'), outHash = $('#hash'), secResult = $('#result');
   const tblBody = document.querySelector('#tbl tbody');
 
   const todayStr = ()=>new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -173,6 +163,7 @@
     }
   }
 
+  // Churchen
   document.getElementById('btn-churchen').addEventListener('click', async ()=>{
     const title = (taIdea.value||'').trim();
     const tags = parseTags(inpTags.value);
@@ -183,7 +174,7 @@
 
     const reg = readReg();
     if (!reg.some(x=>x.id===id)) reg.push(entry);
-    writeReg(cap(reg, MAX_ENTRIES));
+    writeReg(reg);
 
     outId.value = id; outHash.value = hash; secResult.style.display = '';
     render();
@@ -199,6 +190,7 @@
     try{ await navigator.clipboard.writeText(url); }catch{}
   });
 
+  // Deep link ?id=
   (function handleDeepLink(){
     const id = new URLSearchParams(location.search).get('id'); if(!id) return;
     const reg = readReg(); const found = reg.find(x=>x.id===id);
@@ -210,47 +202,44 @@
 })();
 </script>
 
+<!-- ===== EINZIGER Install-Flow ===== -->
 <script>
-/* ===================== PWA INSTALL-FLOW (einziger, geprüfter Block) ===================== */
-(function(){
+(() => {
   const btn  = document.getElementById('btn-pwa-install');
   const hint = document.getElementById('pwa-install-hint');
   const logEl= document.getElementById('log');
-  const say  = (m)=>{ if(hint) hint.textContent=m; if(logEl) logEl.textContent += (logEl.textContent?'\n':'')+m; console.log('[PWA]', m); };
+  const log  = m => { console.log('[PWA]', m); logEl.textContent += '\n' + m; };
 
-  if(!('serviceWorker' in navigator)){ say('Service Worker werden nicht unterstützt.'); return; }
-
-  // SW registrieren (absoluter Pfad + Scope passend zum Repo)
-  window.addEventListener('load', () => {
+  // SW registrieren (absoluter Pfad + Scope fürs Repo)
+  if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/GIAP-global-idea-addressing-protocol/sw.js', {
       scope: '/GIAP-global-idea-addressing-protocol/'
-    }).then(reg => {
-      say('SW registered: ' + reg.scope);
-      return navigator.serviceWorker.ready;
-    }).then(() => {
-      const controlled = !!navigator.serviceWorker.controller;
-      say('SW controlled: ' + controlled);
-      if(!controlled) say('Hinweis: einmal neu laden, damit der neue SW die Seite kontrolliert.');
-    }).catch(err => say('SW error: ' + err));
-  });
+    }).then(reg => log('SW registered: ' + reg.scope))
+      .catch(err => log('SW error: ' + err));
+  } else {
+    log('Kein Service-Worker-Support.');
+  }
 
-  // Install-Event handeln
+  // beforeinstallprompt → Button erst dann zeigen
   let deferred = null;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferred = e;
-    btn.disabled = false; btn.style.opacity = '1';
-    say('beforeinstallprompt: OK – Button freigegeben.');
+    btn.hidden = false;
+    hint.textContent = 'Bereit zur Installation.';
+    log('beforeinstallprompt: OK – Button freigegeben.');
   });
 
   btn.addEventListener('click', async () => {
-    if(!deferred){ say('Noch kein Install-Event. Seite ggf. neu laden.'); return; }
+    if (!deferred) { hint.textContent = 'Noch kein Install-Event. Seite ggf. neu laden.'; return; }
     btn.disabled = true;
     deferred.prompt();
     const choice = await deferred.userChoice;
-    say('userChoice: ' + (choice && choice.outcome));
+    log('userChoice: ' + (choice && choice.outcome));
     deferred = null;
   });
+
+  window.addEventListener('appinstalled', () => { hint.textContent = 'Installiert ✓'; log('appinstalled fired.'); });
 })();
 </script>
 
