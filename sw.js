@@ -1,69 +1,63 @@
-// sw.js (robust für GitHub Pages)
-const CACHE_NAME = 'giap-offline-v4';
+// sw.js
+const CACHE_NAME = 'giap-offline-v5';
 
-// Basis-URL aus dem Service-Worker-Scope ermitteln, z.B. "/GIAP-global-idea-addressing-protocol/"
-const BASE = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/';
-
-// Hilfsfunktion, um sichere absolute Pfade zu bauen
-const U = p => BASE + p.replace(/^\/+/, '');
-
-const ASSETS = [
-  U(''),                    // die Start-URL ("/repo/")
-  U('index.html'),
-  U('launch.html'),
-  U('manifest.webmanifest'),
-  U('icon-192.png'),
-  U('icon-512.png'),
-];
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-      .catch(err => console.error('[SW] addAll failed', err))
-  );
+self.addEventListener('install', (event) => {
+  event.waitUntil((async () => {
+    const base = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/';
+    const u = (p) => base + p.replace(/^\/+/, '');
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll([
+      u(''),
+      u('index.html'),
+      u('manifest.webmanifest'),
+      u('icon-192.png'),
+      u('icon-512.png')
+    ]);
+  })());
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(k => (k === CACHE_NAME ? Promise.resolve() : caches.delete(k)))))
-  );
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => k === CACHE_NAME ? Promise.resolve() : caches.delete(k)));
+  })());
   self.clients.claim();
 });
 
-// Network falling back to cache for normal requests,
-// aber: Für Navigationsanfragen erst Cache -> dann Netz -> Fallback index.html
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // 1) Navigationen immer auf gecachte index.html mappen (SPA/Pages-Redirects, Querystrings etc.)
+  // Navigationsanfragen → index.html (offline-freundlich)
   if (req.mode === 'navigate') {
-    event.respondWith(
-      caches.match(U('index.html'), { ignoreSearch: true })
-        .then(hit => hit || fetch(req))
-        .catch(() => caches.match(U('index.html')))
-    );
+    event.respondWith((async () => {
+      const base = new URL(self.registration.scope).pathname.replace(/\/+$/, '') + '/';
+      const u = (p) => base + p.replace(/^\/+/, '');
+      const cached = await caches.match(u('index.html'), { ignoreSearch: true });
+      try {
+        return (await fetch(req)) || cached || Response.error();
+      } catch {
+        return cached || Response.error();
+      }
+    })());
     return;
   }
 
-  // 2) Für alle anderen GET-Requests: Cache-First, dann Netz, Netz-Erfolg in Cache kopieren
+  // Sonst: Cache-First, dann Netz
   if (req.method === 'GET') {
-    event.respondWith(
-      caches.match(req, { ignoreSearch: true }).then(hit => {
-        if (hit) return hit;
-        return fetch(req).then(res => {
-          // Erfolgreiche Antworten cachen
-          if (res && res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE_NAME).then(c => c.put(req, copy));
-          }
-          return res;
-        });
-      }).catch(err => {
-        console.warn('[SW] fetch failed offline', err);
-        return undefined; // kein spezieller Fallback für Nicht-Navigationen
-      })
-    );
+    event.respondWith((async () => {
+      const hit = await caches.match(req, { ignoreSearch: true });
+      if (hit) return hit;
+      try {
+        const res = await fetch(req);
+        if (res && res.ok) {
+          const c = await caches.open(CACHE_NAME);
+          c.put(req, res.clone());
+        }
+        return res;
+      } catch {
+        return Response.error();
+      }
+    })());
   }
 });
